@@ -2,30 +2,52 @@
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import TopicItem from '../components/learning-log/TopicItem.vue';
+import { fetchTopics } from '../utils/fetchTopics'; 
 
 const topics = ref([]);
+const addingTopic = ref(false); // Flag to track "Add" mode
+const newTopicName = ref('');
 
-const fetchTopics = async () => {
+
+const addTopic = async () => {
     try {
-        const response = await axios.get('http://127.0.0.1:8000/learning-api/topics', {
+        const response = await axios.post('http://127.0.0.1:8000/learning-api/topics', {
+            name: newTopicName.value,
+        }, {
             headers: {
                 Authorization: 'Token a66f357220a8f88926712f4837ae2e6ddf291376',
             },
         });
-        topics.value = response.data;
+
+        if (response.status === 201) {
+            newTopicName.value = ''; // Clear the input field
+            addingTopic.value = false; // Exit "Add" mode
+            fetchTopics(true);
+        }
     } catch (error) {
-        console.error('Error fetching topics:', error);
+        console.error('Error adding topic:', error);
     }
 };
 
-onMounted(fetchTopics);
+onMounted(async () => {
+  try {
+    // Fetch topics for this route using the fetchTopics function
+    const topicsData = await fetchTopics(true);
+    topics.value = topicsData;
+  } catch (error) {
+    console.error('Error fetching topics:', error);
+  }
+});
 </script>
 
 
 <template>
   <div>
     <h1>Topics</h1>
-    <button>Add</button>
+    <button @click="addingTopic = true">Add</button>
+    <!-- Input field for new topic when addingTopic is true -->
+    <input v-if="addingTopic" v-model="newTopicName" />
+    <button v-if="addingTopic" @click="addTopic">Confirm</button>
       <ul>
         <TopicItem v-for="topic in topics['spiderman_23 topics']" :topic="topic" />
       </ul>

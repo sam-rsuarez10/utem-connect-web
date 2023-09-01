@@ -1,5 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import HomeView from '../views/HomeView.vue';
+import { fetchTopics } from '../utils/fetchTopics'; 
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,7 +22,16 @@ const router = createRouter({
     {
       path: '/learning-log/topics',
       name: 'topics',
-      component: () => import('../views/TopicsView.vue')
+      component: () => import('../views/TopicsView.vue'),
+      beforeEnter: async (to, from, next) => {
+        try {
+          const topicsData = await fetchTopics(true); // Fetch topics only for this route
+          // Do something with topicsData if needed
+          next();
+      } catch (error) {
+          console.log("error fetching topics");
+      }
+      }
     }
   ]
 })
