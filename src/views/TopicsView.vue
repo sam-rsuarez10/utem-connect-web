@@ -10,6 +10,12 @@ const newTopicName = ref('');
 
 
 const addTopic = async () => {
+
+    if (!newTopicName.value.trim()) {
+        console.error('Topic name cannot be blank.');
+        return;
+      }
+
     try {
         const response = await axios.post('http://127.0.0.1:8000/learning-api/topics', {
             name: newTopicName.value,
@@ -30,6 +36,10 @@ const addTopic = async () => {
     }
 };
 
+const cancelAddTopic = () => {
+    newTopicName.value = '';
+    addingTopic.value = false;
+};
 onMounted(async () => {
   try {
     // Fetch topics for this route using the fetchTopics function
@@ -49,6 +59,7 @@ onMounted(async () => {
     <!-- Input field for new topic when addingTopic is true -->
     <input v-if="addingTopic" v-model="newTopicName" />
     <button v-if="addingTopic" @click="addTopic">Confirm</button>
+    <button v-if="addingTopic" @click="cancelAddTopic">Cancel</button>
       <ul>
         <TopicItem v-for="topic in topics['spiderman_23 topics']" :topic="topic" />
       </ul>
