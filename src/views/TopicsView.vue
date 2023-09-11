@@ -40,6 +40,17 @@ const cancelAddTopic = () => {
     newTopicName.value = '';
     addingTopic.value = false;
 };
+
+const handleTopicDeleted = async (deletedTopicName) => {
+  try {
+    // Refresh the topics list by calling fetchTopics
+    const topicsData = await fetchTopics(true);
+    topics.value = topicsData;
+  } catch (error) {
+    console.error('Error fetching topics:', error);
+  }
+};
+
 onMounted(async () => {
   try {
     // Fetch topics for this route using the fetchTopics function
@@ -61,7 +72,9 @@ onMounted(async () => {
     <button v-if="addingTopic" @click="addTopic">Confirm</button>
     <button v-if="addingTopic" @click="cancelAddTopic">Cancel</button>
       <ul>
-        <TopicItem v-for="topic in topics['spiderman_23 topics']" :topic="topic" />
+        <TopicItem v-for="topic in topics['spiderman_23 topics']" 
+        :topic="topic" 
+        @topic-deleted="handleTopicDeleted"/>
       </ul>
   </div>
 </template>
