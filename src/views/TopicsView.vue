@@ -22,7 +22,8 @@ const addTopic = async () => {
         if (response.status === 201) {
             newTopicName.value = ''; // Clear the input field
             addingTopic.value = false; // Exit "Add" mode
-            fetchTopics(true);
+            const topicsData = await fetchTopics(true);
+            topics.value = topicsData;
         }
     } catch (error) {
         console.error('Error adding topic:', error);
