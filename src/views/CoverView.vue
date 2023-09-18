@@ -6,8 +6,12 @@
         <main>
             <div class="container">
                 <div class="login-container">
-                    <button class="option-button">Login</button>
-                    <button class="option-button">Registrarse</button>
+                    <router-link to="/login">
+                        <button class="option-button">Login</button>
+                    </router-link>
+                    <router-link to="/register">
+                        <button class="option-button">Registrarse</button>
+                    </router-link>
                 </div>
             </div>
         </main>
@@ -31,6 +35,10 @@ header {
     width: 100%;
     align-items: center;
     color: white;
+}
+
+#header-title {
+    padding-left: 2rem;
 }
 
 main {
