@@ -1,3 +1,8 @@
+<script setup>
+import Footer from '../components/Footer.vue'
+
+</script>
+
 <template>
     <div id="app">
         <header>
@@ -15,9 +20,8 @@
                 </div>
             </div>
         </main>
-        <footer>
-            <h6>Developed by Samuel Reyes Suárez</h6>
-        </footer>
+
+        <Footer />
     </div>
 </template>
 
@@ -71,15 +75,5 @@ main {
     width: 10rem;
     height: 3.5rem;
     border-radius: 5%;
-}
-
-footer {
-    background-color: #D9D9D9;
-    color: black;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 5rem;
 }
 </style>
