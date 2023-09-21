@@ -1,6 +1,39 @@
 <script setup>
-import Footer from '../components/Footer.vue'
+import { reactive } from 'vue';
+import axios from 'axios';
+import Footer from '../components/Footer.vue';
 
+const userState = reactive({
+    username: '',
+    password: '',
+    invalid: false,
+});
+
+const login = async () => {
+    try {
+        const response = await axios.post('http://127.0.0.1:8000/auth/token/login', {
+            username: userState.username,
+            password: userState.password,
+        });
+
+        if (response.status === 200) {
+            // Assuming the response contains a token
+            const token = response.data.auth_token;
+
+            // Store the token in a secure way (e.g., Vuex store, localStorage, or cookies)
+            // Here, we'll use localStorage for simplicity
+            //localStorage.setItem('token', token);
+            console.log('User: ' + userState.username);
+            console.log('Logged in with token: ' + token);
+            // Redirect the user to the home view for logged-in users
+            // You can use Vue Router for navigation
+            // For example: router.push('/home');
+        }
+    } catch (error) {
+        console.error('Login failed:', error);
+        userState.invalid = true;
+    }
+}
 </script>
 
 <template>
@@ -13,14 +46,16 @@ import Footer from '../components/Footer.vue'
             <div class="container">
                 <div class="login-container">
                     <div class="form-floating mb-3">
-                        <input type="text" class="form-control" id="floatingInput" placeholder="Username">
+                        <input type="text" class="form-control" id="floatingInput" placeholder="Username"
+                            v-model="userState.username">
                         <label for="floatingInput">Username</label>
                     </div>
                     <div class="form-floating">
-                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password">
+                        <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
+                            v-model="userState.password">
                         <label for="floatingPassword">Password</label>
                     </div>
-                    <button id="login-button">Login</button>
+                    <button id="login-button"  @click="login">Login</button>
                 </div>
             </div>
         </main>
