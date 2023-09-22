@@ -23,12 +23,13 @@ export const useAuthStore = defineStore('auth', {
                     username: username,
                     password: password,
                 });
-                console.log(response)
+
                 if (response.status === 200) {
                     this.invalid = false;
                     this.authenticated = true;
                     this.authUser = username,
                     this.authToken = response.data.auth_token;
+                    console.log(this.authToken)
                     return true;
                 } else {
                     this.invalid = true;
@@ -40,5 +41,28 @@ export const useAuthStore = defineStore('auth', {
                 return false
             }
         },
+
+        async logout() {
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/auth/token/logout', {}, {
+                    headers: {
+                        Authorization: `Token ${this.token}`,
+                    },
+                });
+
+                if (response.status === 204){
+                    this.authUser = null;
+                    this.authToken = null;
+                    this.invalid = false;
+                    this.authenticated = false;
+    
+                    return true;
+                }
+                return false;
+            } catch (error) {
+                console.error('Logout failed: ', error);
+                return false;
+            }
+        }
     }
 })
