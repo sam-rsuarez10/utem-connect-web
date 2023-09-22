@@ -22,11 +22,11 @@ export const useAuthStore = defineStore('auth', {
                     password: password,
                 });
                 console.log(response)
-                if (response.status === 200){
+                if (response.status === 200) {
                     this.invalid = false;
-
+                    
                     this.authUser = username,
-                    this.authToken = response.data.auth_token;
+                        this.authToken = response.data.auth_token;
                     return true;
                 } else {
                     this.invalid = true;
@@ -37,6 +37,6 @@ export const useAuthStore = defineStore('auth', {
                 this.invalid = true;
                 return false
             }
-        }
+        },
     }
 })

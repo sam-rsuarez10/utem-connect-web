@@ -73,13 +73,6 @@ const login = async () => {
 
 header {
     display: flex;
-
-    #app {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-    }
-
     background-color: #0F7D70;
     height: 5rem;
     width: 100%;
