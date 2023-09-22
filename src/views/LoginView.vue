@@ -13,16 +13,24 @@ const userState = reactive({
     username: '',
     password: '',
     invalid: false,
+    errorMsg: '',
 });
 
 const login = async () => {
+    if (userState.username == '' || userState.password == ''){
+        userState.invalid = true;
+        userState.errorMsg = 'campos username y password son requeridos para login'
+        return;
+    }
     const loginSuccess = await authStore.login(userState.username, userState.password);
     console.log('login success: ' + loginSuccess);
     if (loginSuccess){
         userState.invalid = false;
+        userState.errorMsg = '';
         router.push('/home');
     } else {
         userState.invalid = true;
+        userState.errorMsg = 'credenciales incorrectas';
     }
 }
 </script>
@@ -38,14 +46,15 @@ const login = async () => {
                 <div class="login-container">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingInput" placeholder="Username"
-                            v-model="userState.username">
+                            v-model="userState.username" required>
                         <label for="floatingInput">Username</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                            v-model="userState.password">
+                            v-model="userState.password" required>
                         <label for="floatingPassword">Password</label>
                     </div>
+                    <span class="text-danger" v-if="userState.invalid">{{ userState.errorMsg }}</span>
                     <button id="login-button"  @click="login">Login</button>
                 </div>
             </div>
@@ -97,7 +106,7 @@ main {
     flex-direction: column;
     gap: 5rem;
     width: 30rem;
-    height: 20rem;
+    height: 25rem;
     border-radius: 5%;
 }
 
@@ -112,5 +121,6 @@ main {
     width: 10rem;
     height: 3.5rem;
     border-radius: 5%;
+    align-self: center;
 }
 </style>
