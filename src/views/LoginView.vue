@@ -1,7 +1,13 @@
 <script setup>
 import { reactive } from 'vue';
-import axios from 'axios';
 import Footer from '../components/Footer.vue';
+import { useAuthStore } from '../stores/auth';
+import { useRouter } from 'vue-router';
+
+
+const authStore = useAuthStore();
+
+const router = useRouter();
 
 const userState = reactive({
     username: '',
@@ -10,27 +16,12 @@ const userState = reactive({
 });
 
 const login = async () => {
-    try {
-        const response = await axios.post('http://127.0.0.1:8000/auth/token/login', {
-            username: userState.username,
-            password: userState.password,
-        });
-
-        if (response.status === 200) {
-            // Assuming the response contains a token
-            const token = response.data.auth_token;
-
-            // Store the token in a secure way (e.g., Vuex store, localStorage, or cookies)
-            // Here, we'll use localStorage for simplicity
-            //localStorage.setItem('token', token);
-            console.log('User: ' + userState.username);
-            console.log('Logged in with token: ' + token);
-            // Redirect the user to the home view for logged-in users
-            // You can use Vue Router for navigation
-            // For example: router.push('/home');
-        }
-    } catch (error) {
-        console.error('Login failed:', error);
+    const loginSuccess = await authStore.login(userState.username, userState.password);
+    console.log('login success: ' + loginSuccess);
+    if (loginSuccess){
+        userState.invalid = false;
+        router.push('/home');
+    } else {
         userState.invalid = true;
     }
 }
