@@ -23,7 +23,6 @@ const login = async () => {
         return;
     }
     const loginSuccess = await authStore.login(userState.username, userState.password);
-    console.log('login success: ' + loginSuccess);
     if (loginSuccess){
         userState.invalid = false;
         userState.errorMsg = '';

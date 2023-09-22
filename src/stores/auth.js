@@ -6,12 +6,14 @@ export const useAuthStore = defineStore('auth', {
         authUser: null,
         authToken: null,
         invalid: false,
+        authenticated: false,
     }),
 
     getters: {
         user: (state) => state.authUser,
         token: (state) => state.authToken,
         isInvalid: (state) => state.invalid,
+        isAuthenticated: (state) => state.authenticated,
     },
 
     actions: {
@@ -24,9 +26,9 @@ export const useAuthStore = defineStore('auth', {
                 console.log(response)
                 if (response.status === 200) {
                     this.invalid = false;
-                    
+                    this.authenticated = true;
                     this.authUser = username,
-                        this.authToken = response.data.auth_token;
+                    this.authToken = response.data.auth_token;
                     return true;
                 } else {
                     this.invalid = true;

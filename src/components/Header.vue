@@ -1,9 +1,13 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '../stores/auth';
+
+const authStore = useAuthStore();
+</script>
 
 <template>
     <header>
             <h1 id="header-title">UtemConnect</h1>
-            <span id="#log-out">Log out</span>
+            <span id="#log-out" v-if="authStore.isAuthenticated">Log out</span>
         </header>
 </template>
 
