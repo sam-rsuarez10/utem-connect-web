@@ -1,22 +1,39 @@
 <script setup>
 import { useAuthStore } from '../stores/auth';
+import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
 
 const authStore = useAuthStore();
 const user = authStore.user;
-console.log( "authenticated: "+ authStore.isAuthenticated)
-console.log("user: " + user);
-console.log("token: " + authStore.token);
-console.log('invalid: ' + authStore.invalid);
 </script>
 
 <template>
-  <main>
-    <h1>Home</h1>
-    <template v-if="authStore.isAuthenticated">
-      <p>Welcome, {{ user }}!</p>
-    </template>
-    <template v-else>
-      <p>Welcome to my social media in progress :)</p>
-    </template>
-  </main>
+  <div id="app">
+    <Header />
+    <main>
+      <div class="container">
+        <h1>Home</h1>
+        <div v-if="authStore.isAuthenticated">
+          <p>Welcome, {{ user }}!</p>
+        </div>
+      </div>
+    </main>
+    <Footer />
+  </div>
 </template>
+
+<style scoped>
+#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+</style>

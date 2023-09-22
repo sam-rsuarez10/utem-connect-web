@@ -7,7 +7,7 @@ const authStore = useAuthStore();
 <template>
     <header>
             <h1 id="header-title">UtemConnect</h1>
-            <span id="#log-out" v-if="authStore.isAuthenticated">Log out</span>
+            <span id="#log-out" v-if="authStore.isAuthenticated" style="padding-right: 5rem;">Log out</span>
         </header>
 </template>
 
@@ -24,9 +24,5 @@ header {
 
 #header-title {
     padding-left: 2rem;
-}
-
-#log-out {
-    padding-right: 2rem;
 }
 </style>

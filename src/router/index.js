@@ -1,7 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import { fetchTopics } from '../utils/fetchTopics'; 
+import { fetchTopics } from '../utils/fetchTopics';
 import CoverView from '../views/CoverView.vue';
+import { useAuthStore } from '../stores/auth';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -9,7 +10,8 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: HomeView
+      component: HomeView,
+      meta: { requiresAuth: true },
     },
     {
       path: '/about',
@@ -29,36 +31,52 @@ const router = createRouter({
           const topicsData = await fetchTopics(true); // Fetch topics only for this route
           // Do something with topicsData if needed
           next();
-      } catch (error) {
+        } catch (error) {
           console.log("error fetching topics");
-      }
-      }
+        }
+      },
+      meta: { requiresAuth: true },
     },
 
     {
       path: '/',
       name: 'cover',
-      component: CoverView
+      component: CoverView,
+      meta: { guestOnly: true },
     },
 
     {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),
+      meta: { guestOnly: true },
     },
 
     {
       path: '/register',
       name: 'register',
       component: () => import('../views/RegisterView.vue'),
+      meta: { guestOnly: true },
     },
 
     {
       path: '/verify',
       name: 'verify-email',
       component: () => import('../views/VerifyEmailView.vue'),
+      meta: { guestOnly: true },
     },
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore();
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/');
+  } else if (to.meta.guestOnly && authStore.isAuthenticated) {
+    next('/home');
+  } else {
+    next();
+  }
+});
 
 export default router
