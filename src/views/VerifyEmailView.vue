@@ -1,5 +1,35 @@
 <script setup>
+import { useRouter } from 'vue-router';
 import Footer from '../components/Footer.vue'
+import { useAuthStore } from '../stores/auth';
+import { reactive } from 'vue';
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const otpState = reactive({
+    otp: null,
+    invalid: false,
+    errorMsg: ''
+});
+
+const verify = async () => {
+    if (!otpState.otp){
+        otpState.invalid = true;
+        otpState.errorMsg = 'ingresa un código de verificación válido';
+        return;
+    }
+
+    const verifySuccess = await authStore.verifyUser(otpState.otp);
+
+    if (verifySuccess){
+        router.push('/login');
+    } else {
+        otpState.invalid = true;
+        otpState.errorMsg = 'código de verificación incorrecto';
+        return;
+    }
+};
 
 </script>
 
@@ -11,14 +41,15 @@ import Footer from '../components/Footer.vue'
 
         <main>
             <div class="container">
-                <span>Se envió un código de verificación a tu correo utem para validarlo</span>
+                <span>Se envió un código de verificación a tu correo utem para validarlo (vigencia del código es de 10 min)</span>
                 <form class="row g-3">
                     <div class="input-group mb-3">
                         <input id="otp" type="text" class="form-control" placeholder="323067"
-                            aria-label="Recipient's username" aria-describedby="button-addon2">
-                        <button class="btn verify-button" type="button" id="button-addon2">Confirmar</button>
+                            aria-label="Recipient's username" aria-describedby="button-addon2" v-model="otpState.otp">
+                        <button class="btn verify-button" type="button" id="button-addon2" @click="verify">Confirmar</button>
                     </div>
                 </form>
+                <span class="text-danger" v-if="otpState.invalid">{{ otpState.errorMsg }}</span>
             </div>
         </main>
 
@@ -59,9 +90,9 @@ main {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 5rem;
+    gap: 2rem;
     width: 30rem;
-    height: 15rem;
+    height: 20rem;
     border-radius: 5%;
 }
 
