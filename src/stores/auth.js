@@ -92,6 +92,7 @@ export const useAuthStore = defineStore('auth', {
                 });
 
                 if (response.status === 200){
+                    this.registerEmail = null;
                     return true;
                 } else {
                     return false;
