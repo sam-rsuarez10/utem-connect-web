@@ -91,7 +91,7 @@ export const useAuthStore = defineStore('auth', {
                     otp: otp,
                 });
 
-                if (response.status === 200){
+                if (response.status === 200) {
                     this.registerEmail = null;
                     return true;
                 } else {
@@ -101,6 +101,26 @@ export const useAuthStore = defineStore('auth', {
                 console.error('Verification failed: ', error)
                 return false;
             }
-        }
+        },
+
+        async resendOtp() {
+            try {
+                const response = await axios.post(
+                    "http://127.0.0.1:8000/user-api/reset/otp",
+                    {
+                        email: this.email,
+                    }
+                );
+
+                if (response.status === 200) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } catch (error) {
+                console.error("Resend OTP failed: ", error);
+                return false;
+            }
+        },
     }
 })

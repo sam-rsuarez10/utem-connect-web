@@ -13,6 +13,11 @@ const otpState = reactive({
     errorMsg: ''
 });
 
+const resendState = reactive({
+    msg: '',
+    success: true,
+});
+
 const verify = async () => {
     if (!otpState.otp){
         otpState.invalid = true;
@@ -28,6 +33,16 @@ const verify = async () => {
         otpState.invalid = true;
         otpState.errorMsg = 'código de verificación incorrecto';
         return;
+    }
+};
+
+const resendOtp = async() => {
+    const resendSuccess = await authStore.resendOtp();
+    if (resendSuccess) {
+        resendState.msg = 'código reenviado :)';
+    } else {
+        resendState.msg = false;
+        resendState.msg = 'no se puso reenviar código :(';
     }
 };
 
@@ -50,6 +65,8 @@ const verify = async () => {
                     </div>
                 </form>
                 <span class="text-danger" v-if="otpState.invalid">{{ otpState.errorMsg }}</span>
+                <button id="resend-button" @click="resendOtp">reenviar código</button>
+                <span  v-if="resendState.msg" v-bind:class="{ 'text-success': resendState.success, 'text-danger': !resendState.success }" id="resend-msg">{{ resendState.msg }}</span>
             </div>
         </main>
 
@@ -90,7 +107,7 @@ main {
     align-items: center;
     justify-content: center;
     flex-direction: column;
-    gap: 2rem;
+    gap: 1.5rem;
     width: 30rem;
     height: 20rem;
     border-radius: 5%;
@@ -103,5 +120,24 @@ main {
 .verify-button:hover {
     background-color: #0F7D70;
     color: white;
+}
+
+#resend-button {
+    background-color: #0F7D70;
+    color: white;
+    border: #0F7D70;
+    height: 2.5rem;
+    font-size: 0.95rem;
+    border-radius: 10%;
+    align-self: flex-start;
+}
+
+#resend-button:hover {
+    font-size: 1.1rem;
+    transition: 500ms;
+}
+
+#resend-msg {
+    align-self: flex-start;
 }
 </style>
