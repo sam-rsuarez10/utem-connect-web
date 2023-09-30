@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import axios from "axios";
+import axios from "@/axios";
 
 export const useAuthStore = defineStore('auth', {
     state: () => ({
@@ -21,7 +21,7 @@ export const useAuthStore = defineStore('auth', {
     actions: {
         async login(username, password) {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/auth/token/login', {
+                const response = await axios.post('/auth/token/login', {
                     username: username,
                     password: password,
                 });
@@ -46,7 +46,7 @@ export const useAuthStore = defineStore('auth', {
 
         async logout() {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/auth/token/logout', {}, {
+                const response = await axios.post('/auth/token/logout', {}, {
                     headers: {
                         Authorization: `Token ${this.token}`,
                     },
@@ -69,7 +69,7 @@ export const useAuthStore = defineStore('auth', {
 
         async register(userData) {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/user-api/register', userData);
+                const response = await axios.post('/user-api/register', userData);
                 console.log(response)
                 if (response.status === 201) {
                     this.registerEmail = userData.email
@@ -86,7 +86,7 @@ export const useAuthStore = defineStore('auth', {
 
         async verifyUser(otp) {
             try {
-                const response = await axios.post('http://127.0.0.1:8000/user-api/verify', {
+                const response = await axios.post('/user-api/verify', {
                     email: this.email,
                     otp: otp,
                 });
@@ -106,7 +106,7 @@ export const useAuthStore = defineStore('auth', {
         async resendOtp() {
             try {
                 const response = await axios.post(
-                    "http://127.0.0.1:8000/user-api/reset/otp",
+                    "/user-api/reset/otp",
                     {
                         email: this.email,
                     }
