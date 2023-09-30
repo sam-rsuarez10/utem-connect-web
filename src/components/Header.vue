@@ -17,9 +17,23 @@ const logout = async () => {
 <template>
     <header>
         <h1 id="header-title">UtemConnect</h1>
-        <span id="log-out" v-if="authStore.isAuthenticated">
-            <button @click="logout">Log out</button>
-        </span>
+        <div class="dropdown" v-if="authStore.isAuthenticated">
+            <button class="btn dropdown-toggle" type="button" id="logoutDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Cerrar sesión
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="logoutDropdown">
+                <li>
+                    <button id="logout" class="dropdown-item" @click="logout">Cerrar sesión</button>
+                </li>
+
+                <li>
+                    <button id="my-profile" class="dropdown-item">
+                        Mi Perfil
+                    </button>
+                </li>
+            </ul>
+        </div>
     </header>
 </template>
 
@@ -38,8 +52,9 @@ header {
     padding-left: 2rem;
 }
 
-#log-out {
+.dropdown {
     padding-right: 5rem;
+    color: white;
 }
 
 #log-out button {
@@ -48,7 +63,15 @@ header {
     color: white;
 }
 
-#log-out button:hover {
+#logout:hover {
     background-color: red;
+    transition: 500ms;
+    color: white;
+}
+
+#my-profile:hover {
+    background-color: #0F7D70;
+    transition: 500ms;
+    color: white;
 }
 </style>
