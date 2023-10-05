@@ -16,7 +16,9 @@ const logout = async () => {
 
 <template>
     <header>
-        <h1 id="header-title">UtemConnect</h1>
+        <router-link to="/home" class="router-link">
+            <h1 id="header-title">UtemConnect</h1>
+        </router-link>
         <div class="dropdown" v-if="authStore.isAuthenticated">
             <button class="btn dropdown-toggle" type="button" id="logoutDropdown" data-bs-toggle="dropdown"
                 aria-expanded="false">
@@ -28,9 +30,11 @@ const logout = async () => {
                 </li>
 
                 <li>
-                    <button id="my-profile" class="dropdown-item">
-                        Mi Perfil
-                    </button>
+                    <router-link to="/me" class="router-link">
+                        <button id="my-profile" class="dropdown-item">
+                            Mi Perfil
+                        </button>
+                    </router-link>
                 </li>
             </ul>
         </div>
@@ -50,6 +54,7 @@ header {
 
 #header-title {
     padding-left: 2rem;
+    color: white;
 }
 
 .dropdown {
@@ -73,5 +78,9 @@ header {
     background-color: #0F7D70;
     transition: 500ms;
     color: white;
+}
+
+.router-link {
+    text-decoration: none;
 }
 </style>

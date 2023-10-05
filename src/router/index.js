@@ -65,6 +65,13 @@ const router = createRouter({
       component: () => import('../views/VerifyEmailView.vue'),
       meta: { guestOnly: true },
     },
+
+    {
+      path: '/me',
+      name: 'my-profile',
+      component: () => import('../views/MyProfileView.vue'),
+      meta: { requiresAuth: true },
+    },
   ]
 })
 
