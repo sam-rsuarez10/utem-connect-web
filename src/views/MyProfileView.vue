@@ -2,6 +2,7 @@
 import { useAuthStore } from '../stores/auth';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
+import MyProfileInfo from '../components/users/MyProfileInfo.vue';
 
 const authStore = useAuthStore();
 const user = authStore.user;
@@ -12,7 +13,7 @@ const user = authStore.user;
         <Header />
 
         <main>
-            <h2>my profile info</h2>
+            <MyProfileInfo />
         </main>
 
         <Footer />
