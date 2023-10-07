@@ -1,14 +1,18 @@
 <script setup>
 import { reactive, onMounted, ref} from 'vue';
+import { fetchUserInfo } from '../../utils/fetchUserInfo';
+import { useAuthStore } from '../../stores/auth';
+
+const authStore =  useAuthStore();
 
 const textareaDesc = ref();
 
 const userInfo = reactive({
-    username: 'spiderman_23',
-    names: 'Samuel Benjamín',
-    lastnames: 'Reyes Suárez',
-    career: 'Ingeniería Informática',
-    description: 'my description',
+    username: '',
+    names: '',
+    lastnames: '',
+    career: '',
+    description: '',
     editState: false,
 }); 
 
@@ -30,8 +34,26 @@ const cancelEditInput = (inputId) => {
     }
 };
 
-onMounted(() => {
-    textareaDesc.value.focus();
+const fetchData = async () => {
+    
+};
+
+onMounted( async () => {
+    try {
+        const response = await fetchUserInfo(true, authStore.user, authStore.token);
+        const userData = response.data['user-info'];
+
+        userInfo.username = userData.username;
+        userInfo.career = userData.career;
+        userInfo.description = userData.personal_description;
+        userInfo.names = `${userData.first_name} ${userData.middle_name}`;
+        userInfo.lastnames = `${userData.last_name} ${userData.second_surname}`;
+
+        localStorage.setItem('userInfo', JSON.stringify(userInfo));
+        textareaDesc.value.focus();
+    } catch (error) {
+        console.error('Error fetching user info: ', error);
+    }
 });
 </script>
 
@@ -79,7 +101,8 @@ onMounted(() => {
                     name="user-description" 
                     id="description" cols="35" rows="4" 
                     v-model="userInfo.description"
-                    @input="handleTextareaInput"></textarea>
+                    @input="handleTextareaInput"
+                    spellcheck="false"></textarea>
                 </div>
 
                 <div class="submit-buttons-container" v-if="userInfo.editState">
