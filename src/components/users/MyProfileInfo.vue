@@ -34,8 +34,25 @@ const cancelEditInput = (inputId) => {
     }
 };
 
-const fetchData = async () => {
-    
+const resetComponent = () => {
+
+    const savedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
+    if (savedUserInfo) {
+        userInfo.username = savedUserInfo.username;
+        userInfo.names = savedUserInfo.names;
+        userInfo.lastnames = savedUserInfo.lastnames;
+        userInfo.career = savedUserInfo.career;
+        userInfo.description = savedUserInfo.description;
+    }
+
+    const inputElements = document.querySelectorAll('input');
+    inputElements.forEach((inputElement) => {
+        inputElement.setAttribute('disabled', 'disabled');
+    });
+
+    userInfo.editState = false;
+
+    textareaDesc.value.focus();
 };
 
 onMounted( async () => {
@@ -110,7 +127,9 @@ onMounted( async () => {
                         Guardar
                     </button>
 
-                    <button class="option-button" id="cancel-button">
+                    <button class="option-button" 
+                    id="cancel-button"
+                    @click="resetComponent">
                         Cancelar
                     </button>
                 </div>
