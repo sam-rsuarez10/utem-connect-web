@@ -31,7 +31,6 @@ export const useAuthStore = defineStore('auth', {
                     this.authenticated = true;
                     this.authUser = username,
                         this.authToken = response.data.auth_token;
-                    console.log(this.authToken)
                     return true;
                 } else {
                     this.invalid = true;

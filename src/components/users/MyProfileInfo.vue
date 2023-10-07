@@ -1,20 +1,23 @@
 <script setup>
-import { reactive, onMounted, ref} from 'vue';
+import { reactive, onMounted, ref } from 'vue';
 import { fetchUserInfo } from '../../utils/fetchUserInfo';
 import { useAuthStore } from '../../stores/auth';
+import axios from '@/axios';
 
-const authStore =  useAuthStore();
+const authStore = useAuthStore();
 
 const textareaDesc = ref();
 
 const userInfo = reactive({
     username: '',
-    names: '',
-    lastnames: '',
+    firstname: '',
+    middle_name: '',
+    lastname: '',
+    second_surname: '',
     career: '',
     description: '',
     editState: false,
-}); 
+});
 
 const handleTextareaInput = () => {
     userInfo.editState = true;
@@ -45,17 +48,60 @@ const resetComponent = () => {
         userInfo.description = savedUserInfo.description;
     }
 
-    const inputElements = document.querySelectorAll('input');
-    inputElements.forEach((inputElement) => {
-        inputElement.setAttribute('disabled', 'disabled');
-    });
+    disbaleInputs();
 
     userInfo.editState = false;
 
     textareaDesc.value.focus();
 };
 
-onMounted( async () => {
+const disbaleInputs = () => {
+
+    const inputElements = document.querySelectorAll('input');
+    inputElements.forEach((inputElement) => {
+        inputElement.setAttribute('disabled', 'disabled');
+    });
+}
+
+const saveUserInfo = async () => {
+    const payload = {
+        first_name: userInfo.firstname,
+        last_name: userInfo.lastname,
+        middle_name:  userInfo.middle_name? userInfo.middle_name : '',
+        second_surname: userInfo.second_surname? userInfo.second_surname : '',
+        career: userInfo.career,
+        personal_description: userInfo.description,
+    };
+
+    // Add username to payload if it's different from authStore
+    if (userInfo.username !== authStore.user) {
+        payload.username = userInfo.username;
+    }
+
+    try {
+        const response = await axios.put('/user-api/user-info', payload, {
+            headers: {
+                Authorization: `Token ${authStore.token}`,
+            },
+        });
+
+        if (response.status === 200) {
+            // Update auth store username if it was changed
+            if (userInfo.username !== authStore.user) {
+                authStore.$patch({ authUser: userInfo.username })
+            }
+
+            // Refresh component data and localStorage
+            fetchUserAndInitialize();
+            userInfo.editState = false;
+            disbaleInputs();
+        }
+    } catch (error) {
+        console.error('Error saving user info: ', error);
+    }
+};
+
+const fetchUserAndInitialize = async () => {
     try {
         const response = await fetchUserInfo(true, authStore.user, authStore.token);
         const userData = response.data['user-info'];
@@ -63,15 +109,19 @@ onMounted( async () => {
         userInfo.username = userData.username;
         userInfo.career = userData.career;
         userInfo.description = userData.personal_description;
-        userInfo.names = `${userData.first_name} ${userData.middle_name}`;
-        userInfo.lastnames = `${userData.last_name} ${userData.second_surname}`;
+        userInfo.firstname = userData.first_name;
+        userInfo.middle_name = userData.middle_name;
+        userInfo.lastname = userData.last_name;
+        userInfo.second_surname = userData.second_surname;
 
         localStorage.setItem('userInfo', JSON.stringify(userInfo));
         textareaDesc.value.focus();
     } catch (error) {
         console.error('Error fetching user info: ', error);
     }
-});
+};
+
+onMounted(fetchUserAndInitialize);
 </script>
 
 <template>
@@ -84,23 +134,39 @@ onMounted( async () => {
                     <input type="text" id="username" class="form-control" v-model="userInfo.username"
                         aria-label="Recipient's username with two button addons" disabled>
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('username')">Edit</button>
-                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('username')">Cancel</button>
+                    <button class="btn btn-outline-danger" type="button"
+                        @click="cancelEditInput('username')">Cancel</button>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="names" class="form-control" v-model="userInfo.names"
+                    <input type="text" id="firstname" class="form-control" v-model="userInfo.firstname"
                         aria-label="Recipient's username with two button addons" disabled>
-                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('names')">Edit</button>
-                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('names')">Cancel</button>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('firstname')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('firstname')">Cancel</button>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="lastnames" class="form-control" v-model="userInfo.lastnames"
+                    <input type="text" id="middle-name" class="form-control" v-model="userInfo.middle_name"
                         aria-label="Recipient's username with two button addons" disabled>
-                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('lastnames')">Edit</button>
-                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('lastnames')">Cancel</button>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('middle-name')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('middle-name')">Cancel</button>
                 </div>
 
+                <div class="input-group">
+                    <input type="text" id="lastname" class="form-control" v-model="userInfo.lastname"
+                        aria-label="Recipient's username with two button addons" disabled>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('lastname')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button"
+                        @click="cancelEditInput('lastname')">Cancel</button>
+                </div>
+
+                <div class="input-group">
+                    <input type="text" id="surname" class="form-control" v-model="userInfo.second_surname"
+                        aria-label="Recipient's username with two button addons" disabled>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('surname')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button"
+                        @click="cancelEditInput('surname')">Cancel</button>
+                </div>
 
                 <div class="input-group">
                     <input type="text" id="career" class="form-control" v-model="userInfo.career"
@@ -113,23 +179,16 @@ onMounted( async () => {
             <div class="bottom-container">
                 <div class="description-container">
                     <h5>Sobre mí</h5>
-                    <textarea 
-                    ref="textareaDesc" 
-                    name="user-description" 
-                    id="description" cols="35" rows="4" 
-                    v-model="userInfo.description"
-                    @input="handleTextareaInput"
-                    spellcheck="false"></textarea>
+                    <textarea ref="textareaDesc" name="user-description" id="description" cols="35" rows="4"
+                        v-model="userInfo.description" @input="handleTextareaInput" spellcheck="false"></textarea>
                 </div>
 
                 <div class="submit-buttons-container" v-if="userInfo.editState">
-                    <button class="option-button" id="save-button" type="submit">
+                    <button class="option-button" id="save-button" type="submit" @click="saveUserInfo">
                         Guardar
                     </button>
 
-                    <button class="option-button" 
-                    id="cancel-button"
-                    @click="resetComponent">
+                    <button class="option-button" id="cancel-button" @click="resetComponent">
                         Cancelar
                     </button>
                 </div>
@@ -150,7 +209,7 @@ h5 {
     align-items: center;
     justify-content: flex-start;
     width: 50rem;
-    height: 45rem;
+    height: 50rem;
     border-radius: 5%;
     flex-direction: column;
 }
