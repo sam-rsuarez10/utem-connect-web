@@ -1,4 +1,38 @@
 <script setup>
+import { reactive, onMounted, ref} from 'vue';
+
+const textareaDesc = ref();
+
+const userInfo = reactive({
+    username: 'spiderman_23',
+    names: 'Samuel Benjamín',
+    lastnames: 'Reyes Suárez',
+    career: 'Ingeniería Informática',
+    description: 'my description',
+    editState: false,
+}); 
+
+const handleTextareaInput = () => {
+    userInfo.editState = true;
+};
+
+const enableEdit = (inputId) => {
+    userInfo.editState = true;
+    const inputElement = document.getElementById(inputId);
+    inputElement.removeAttribute('disabled');
+    inputElement.focus();
+};
+
+const cancelEditInput = (inputId) => {
+    const inputElement = document.getElementById(inputId);
+    if (!inputElement.hasAttribute('disabled')) {
+        inputElement.setAttribute('disabled', 'disabled');
+    }
+};
+
+onMounted(() => {
+    textareaDesc.value.focus();
+});
 </script>
 
 <template>
@@ -8,42 +42,47 @@
 
             <div class="names-info">
                 <div class="input-group">
-                    <input type="text" id="username" class="form-control" value="username"
+                    <input type="text" id="username" class="form-control" v-model="userInfo.username"
                         aria-label="Recipient's username with two button addons" disabled>
-                    <button class="btn btn-outline-warning" type="button">Edit</button>
-                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('username')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('username')">Cancel</button>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="username" class="form-control" value="Samuel Benjamín"
+                    <input type="text" id="names" class="form-control" v-model="userInfo.names"
                         aria-label="Recipient's username with two button addons" disabled>
-                    <button class="btn btn-outline-warning" type="button">Edit</button>
-                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('names')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('names')">Cancel</button>
                 </div>
 
                 <div class="input-group">
-                    <input type="text" id="username" class="form-control" value="Reyes Suárez"
+                    <input type="text" id="lastnames" class="form-control" v-model="userInfo.lastnames"
                         aria-label="Recipient's username with two button addons" disabled>
-                    <button class="btn btn-outline-warning" type="button">Edit</button>
-                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('lastnames')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('lastnames')">Cancel</button>
                 </div>
 
 
                 <div class="input-group">
-                    <input type="text" id="username" class="form-control" value="Ingeniería Informática"
+                    <input type="text" id="career" class="form-control" v-model="userInfo.career"
                         aria-label="Recipient's username with two button addons" disabled>
-                    <button class="btn btn-outline-warning" type="button">Edit</button>
-                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                    <button class="btn btn-outline-warning" type="button" @click="enableEdit('career')">Edit</button>
+                    <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('career')">Cancel</button>
                 </div>
 
             </div>
             <div class="bottom-container">
                 <div class="description-container">
                     <h5>Sobre mí</h5>
-                    <textarea name="user-description" id="description" cols="35" rows="4">lorem ipsum</textarea>
+                    <textarea 
+                    ref="textareaDesc" 
+                    name="user-description" 
+                    id="description" cols="35" rows="4" 
+                    v-model="userInfo.description"
+                    @input="handleTextareaInput"></textarea>
                 </div>
 
-                <div class="submit-buttons-container">
+                <div class="submit-buttons-container" v-if="userInfo.editState">
                     <button class="option-button" id="save-button" type="submit">
                         Guardar
                     </button>
