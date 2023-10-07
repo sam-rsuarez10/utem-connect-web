@@ -4,32 +4,64 @@
 <template>
     <form action="#">
         <div class="info-container">
-        <div class="profile-photo"></div>
+            <div class="profile-photo"></div>
 
-        <div class="names-info">
-            <h3>Username</h3>
-            <h5>Samuel Benjamín</h5>
-            <h5>Reyes Suárez</h5>
-        </div>
+            <div class="names-info">
+                <div class="input-group">
+                    <input type="text" id="username" class="form-control" value="username"
+                        aria-label="Recipient's username with two button addons" disabled>
+                    <button class="btn btn-outline-warning" type="button">Edit</button>
+                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                </div>
 
-        <h3 id="carrera">Ingeniería en Informática</h3>
+                <div class="input-group">
+                    <input type="text" id="username" class="form-control" value="Samuel Benjamín"
+                        aria-label="Recipient's username with two button addons" disabled>
+                    <button class="btn btn-outline-warning" type="button">Edit</button>
+                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                </div>
 
-        <div class="bottom-container">
-            <div class="description-container">
-                <h5>Sobre mí</h5>
-                <textarea name="user-description" id="description" cols="35" rows="4">lorem ipsum</textarea>
+                <div class="input-group">
+                    <input type="text" id="username" class="form-control" value="Reyes Suárez"
+                        aria-label="Recipient's username with two button addons" disabled>
+                    <button class="btn btn-outline-warning" type="button">Edit</button>
+                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                </div>
+
+
+                <div class="input-group">
+                    <input type="text" id="username" class="form-control" value="Ingeniería Informática"
+                        aria-label="Recipient's username with two button addons" disabled>
+                    <button class="btn btn-outline-warning" type="button">Edit</button>
+                    <button class="btn btn-outline-danger" type="button">Cancel</button>
+                </div>
+
+            </div>
+            <div class="bottom-container">
+                <div class="description-container">
+                    <h5>Sobre mí</h5>
+                    <textarea name="user-description" id="description" cols="35" rows="4">lorem ipsum</textarea>
+                </div>
+
+                <div class="submit-buttons-container">
+                    <button class="option-button" id="save-button" type="submit">
+                        Guardar
+                    </button>
+
+                    <button class="option-button" id="cancel-button">
+                        Cancelar
+                    </button>
+                </div>
             </div>
 
-            <button class="option-button" id="edit">
-                Editar
-            </button>
         </div>
-
-    </div>
     </form>
 </template>
 
 <style scoped>
+h5 {
+    color: white;
+}
 
 .info-container {
     background-color: #155C5F;
@@ -37,7 +69,7 @@
     align-items: center;
     justify-content: flex-start;
     width: 50rem;
-    height: 40rem;
+    height: 45rem;
     border-radius: 5%;
     flex-direction: column;
 }
@@ -47,8 +79,8 @@
     width: 12rem;
     height: 12rem;
     border-radius: 50%;
-    background-color: #ffffff;
-    order: -1;
+    background-color: gray;
+
 }
 
 .names-info {
@@ -57,6 +89,7 @@
     margin-top: 1.5rem;
     justify-content: center;
     align-items: center;
+    gap: 0.75rem;
 }
 
 #carrera {
@@ -70,6 +103,7 @@
     width: 45rem;
     height: 10rem;
     justify-content: space-between;
+    margin-top: 2rem;
 }
 
 .description-container {
@@ -78,7 +112,7 @@
 }
 
 .option-button {
-    width: 5rem;
+    width: 5.5rem;
     height: 3rem;
     align-self: flex-end;
     border: none;
@@ -98,14 +132,26 @@
     overflow-y: auto;
 }
 
-#edit {
-    background-color: #9ADB9A;
-    margin-right: 2rem;
+.submit-buttons-container {
+    align-self: flex-end;
+    display: flex;
+    width: 12rem;
+    justify-content: space-between;
 }
 
-#edit:hover{
+#save-button {
     background-color: #62BD62;
 }
 
+#save-button:hover {
+    color: white;
+}
 
+#cancel-button {
+    background-color: red;
+}
+
+#cancel-button:hover {
+    color: white;
+}
 </style>
