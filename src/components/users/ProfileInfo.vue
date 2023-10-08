@@ -1,36 +1,85 @@
 <script setup>
+import { useAuthStore } from '../../stores/auth';
+import { onMounted, reactive } from 'vue';
+import { fetchUserInfo } from '../../utils/fetchUserInfo';
+
+const authStore = useAuthStore();
+
+const props = defineProps({
+    username: String,
+});
+
+const userInfo = reactive({
+    username: props.username,
+    names: '',
+    lastnames: '',
+    career: '',
+    description: '',
+});
+
+onMounted(async () => {
+    try {
+        const response = await fetchUserInfo(true, userInfo.username, authStore.token);
+        const userData = response.data['user-info'];
+
+        if (userData.middle_name) {
+            userInfo.names = `${userData.first_name} ${userData.middle_name}`;
+        } else {
+            userInfo.names = userData.first_name;
+        }
+
+        if (userData.second_surname) {
+            userInfo.lastnames = `${userData.last_name} ${userData.second_surname}`;
+        } else {
+            userInfo.lastnames = userData.last_name;
+        }
+
+        if (userData.career) {
+            userInfo.career = userData.career;
+        } else {
+            userInfo.career = 'Sin carrera';
+        }
+
+        if (userData.personal_description){
+            userInfo.description = userData.personal_description;
+        } else {
+            userInfo.description = 'Sin descripción';
+        }
+        
+    } catch (error) {
+        console.error('Error fetching user info: ', error);
+    }
+});
+
 </script>
 
 <template>
-    <form action="#">
-        <div class="info-container">
+    <div class="info-container">
         <div class="profile-photo"></div>
 
         <div class="names-info">
-            <h3>Username</h3>
-            <h5>Samuel Benjamín</h5>
-            <h5>Reyes Suárez</h5>
+            <h3>{{ userInfo.username }}</h3>
+            <h5>{{ userInfo.names }}</h5>
+            <h5>{{ userInfo.lastnames }}</h5>
         </div>
 
-        <h3 id="carrera">Ingeniería en Informática</h3>
+        <h3 id="carrera">{{ userInfo.career }}</h3>
 
         <div class="bottom-container">
             <div class="description-container">
                 <h5>Sobre mí</h5>
-                <textarea name="user-description" id="description" cols="35" rows="4">lorem ipsum</textarea>
+                <p id="description">{{ userInfo.description }}</p>
             </div>
 
-            <button class="option-button" id="edit">
-                Editar
+            <button class="option-button" id="connect">
+                Conectar
             </button>
         </div>
 
     </div>
-    </form>
 </template>
 
 <style scoped>
-
 .info-container {
     background-color: #155C5F;
     display: flex;
@@ -40,6 +89,7 @@
     height: 40rem;
     border-radius: 5%;
     flex-direction: column;
+    color: white;
 }
 
 .profile-photo {
@@ -78,7 +128,7 @@
 }
 
 .option-button {
-    width: 5rem;
+    width: 5.5rem;
     height: 3rem;
     align-self: flex-end;
     border: none;
@@ -98,14 +148,12 @@
     overflow-y: auto;
 }
 
-#edit {
+#connect {
     background-color: #9ADB9A;
     margin-right: 2rem;
 }
 
-#edit:hover{
+#connect:hover {
     background-color: #62BD62;
 }
-
-
 </style>
