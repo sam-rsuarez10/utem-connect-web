@@ -1,9 +1,30 @@
 <script setup>
 import { useAuthStore } from '../../stores/auth';
-import { onMounted, reactive } from 'vue';
+import { onMounted, reactive, computed, watch } from 'vue';
 import { fetchUserInfo } from '../../utils/fetchUserInfo';
+import axios from '@/axios';
 
 const authStore = useAuthStore();
+
+const connectButtonState = reactive({
+    isConnection: false, // user is not a connection with logged user
+    isPending: false, // connect request is pending
+    buttonText: 'Conectar',
+});
+
+const connectButtonText = computed(() => {
+    if (connectButtonState.isConnection) {
+        return 'Chat';
+    } else if (connectButtonState.isPending) {
+        return 'Solicitud enviada';
+    } else {
+        return 'Conectar';
+    }
+});
+
+watch(connectButtonText, (newText) => {
+    connectButtonState.buttonText = newText;
+});
 
 const props = defineProps({
     username: String,
@@ -16,6 +37,32 @@ const userInfo = reactive({
     career: '',
     description: '',
 });
+
+const sendConnectRequest = async () => {
+
+    if (connectButtonState.isConnection || connectButtonState.isPending)
+        return;
+
+    try {
+        const response = await axios.post(
+            '/connect-api/send',
+            {
+                user_to_username: userInfo.username,
+            },
+            {
+                headers: {
+                    Authorization: `Token ${authStore.token}`,
+                },
+            }
+        );
+
+        if (response.status === 200) {
+            connectButtonState.isPending = true;
+        }
+    } catch (error) {
+        console.error('Error sending request: ', error);
+    }
+};
 
 onMounted(async () => {
     try {
@@ -40,12 +87,12 @@ onMounted(async () => {
             userInfo.career = 'Sin carrera';
         }
 
-        if (userData.personal_description){
+        if (userData.personal_description) {
             userInfo.description = userData.personal_description;
         } else {
             userInfo.description = 'Sin descripción';
         }
-        
+
     } catch (error) {
         console.error('Error fetching user info: ', error);
     }
@@ -71,8 +118,8 @@ onMounted(async () => {
                 <p id="description">{{ userInfo.description }}</p>
             </div>
 
-            <button class="option-button" id="connect">
-                Conectar
+            <button class="option-button" id="connect" @click="sendConnectRequest" :disabled="connectButtonState.isPending">
+                {{ connectButtonState.buttonText }}
             </button>
         </div>
 
@@ -129,7 +176,7 @@ onMounted(async () => {
 
 .option-button {
     width: 5.5rem;
-    height: 3rem;
+    height: 3.5rem;
     align-self: flex-end;
     border: none;
     border-radius: 7%;
