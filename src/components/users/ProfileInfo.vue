@@ -9,7 +9,7 @@ const authStore = useAuthStore();
 const connectButtonState = reactive({
     isConnection: false, // user is not a connection with logged user
     isPending: false, // connect request is pending
-    buttonText: 'Conectar',
+    buttonText: '',
 });
 
 const connectButtonText = computed(() => {
@@ -38,6 +38,11 @@ const userInfo = reactive({
     description: '',
 });
 
+const connectionRequest = reactive({
+    id: '',
+    replyState: false,
+});
+
 const sendConnectRequest = async () => {
 
     if (connectButtonState.isConnection || connectButtonState.isPending)
@@ -64,7 +69,7 @@ const sendConnectRequest = async () => {
     }
 };
 
-onMounted(async () => {
+const fetchInfo = async () => {
     try {
         const response = await fetchUserInfo(true, userInfo.username, authStore.token);
         const userData = response.data['user-info'];
@@ -96,6 +101,70 @@ onMounted(async () => {
     } catch (error) {
         console.error('Error fetching user info: ', error);
     }
+}
+
+const checkPendingRequest = async () => {
+    // check for any pending request between two users involved
+    
+    try {
+        const response = await axios.get(
+            `/connect-api/pending-requests?sender=${authStore.user}&receiver=${userInfo.username}`,{
+                headers: {
+                    Authorization: `Token ${authStore.token}`,
+                }
+        });
+
+        const requestData = response.data['connection_request'];
+        if ( requestData == 'null'){
+            connectButtonState.buttonText = 'Conectar';
+        } else if (requestData.user_from == authStore.user){
+            // logged user already sent a connect request to this user
+            connectButtonState.buttonText = 'Solicitud enviada';
+        } else {
+            // logged user has to reply connection request
+            connectionRequest.id = requestData.id;
+            connectionRequest.replyState = true;
+        }
+    } catch (error) {
+        console.error('Error checking for pending request: ', error);
+    }
+};
+
+const checkExistingConnection = async () => {
+    // check for any existing connection between teo users involved
+
+    try {
+        const response = await axios.get(
+            `/connect-api/connections?user1=${authStore.user}&user2=${userInfo.username}`, {
+                headers: {
+                    Authorization: `Token ${authStore.token}`,
+                }
+        });
+
+        if (response.data['connection'] != 'null'){
+            connectButtonState.buttonText = 'Chat';
+            return true;
+        }
+
+        return false;
+    } catch (error) {
+        console.error('Error checking for existing connection: ', error);
+    }
+
+};
+
+onMounted(async () => {
+    try {
+        await fetchInfo();
+
+        const haveConnection = await checkExistingConnection();
+
+        if(!haveConnection)
+            await checkPendingRequest();
+
+    } catch (error) {
+        console.error('something went worng on mounting', error)
+    }
 });
 
 </script>
@@ -118,7 +187,7 @@ onMounted(async () => {
                 <p id="description">{{ userInfo.description }}</p>
             </div>
 
-            <button class="option-button" id="connect" @click="sendConnectRequest" :disabled="connectButtonState.isPending">
+            <button class="option-button" id="connect" @click="sendConnectRequest">
                 {{ connectButtonState.buttonText }}
             </button>
         </div>
