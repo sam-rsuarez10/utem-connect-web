@@ -40,6 +40,7 @@ const userInfo = reactive({
 
 const connectionRequest = reactive({
     id: '',
+    userReply: '',
     replyState: false,
 });
 
@@ -105,19 +106,19 @@ const fetchInfo = async () => {
 
 const checkPendingRequest = async () => {
     // check for any pending request between two users involved
-    
+
     try {
         const response = await axios.get(
-            `/connect-api/pending-requests?sender=${authStore.user}&receiver=${userInfo.username}`,{
-                headers: {
-                    Authorization: `Token ${authStore.token}`,
-                }
+            `/connect-api/pending-requests?sender=${authStore.user}&receiver=${userInfo.username}`, {
+            headers: {
+                Authorization: `Token ${authStore.token}`,
+            }
         });
 
         const requestData = response.data['connection_request'];
-        if ( requestData == 'null'){
+        if (requestData == 'null') {
             connectButtonState.buttonText = 'Conectar';
-        } else if (requestData.user_from == authStore.user){
+        } else if (requestData.user_from == authStore.user) {
             // logged user already sent a connect request to this user
             connectButtonState.buttonText = 'Solicitud enviada';
         } else {
@@ -136,12 +137,12 @@ const checkExistingConnection = async () => {
     try {
         const response = await axios.get(
             `/connect-api/connections?user1=${authStore.user}&user2=${userInfo.username}`, {
-                headers: {
-                    Authorization: `Token ${authStore.token}`,
-                }
+            headers: {
+                Authorization: `Token ${authStore.token}`,
+            }
         });
 
-        if (response.data['connection'] != 'null'){
+        if (response.data['connection'] != 'null') {
             connectButtonState.buttonText = 'Chat';
             return true;
         }
@@ -159,7 +160,7 @@ onMounted(async () => {
 
         const haveConnection = await checkExistingConnection();
 
-        if(!haveConnection)
+        if (!haveConnection)
             await checkPendingRequest();
 
     } catch (error) {
@@ -187,9 +188,19 @@ onMounted(async () => {
                 <p id="description">{{ userInfo.description }}</p>
             </div>
 
-            <button class="option-button" id="connect" @click="sendConnectRequest">
+            <button class="option-button" id="connect" @click="sendConnectRequest" v-if="!connectionRequest.replyState">
                 {{ connectButtonState.buttonText }}
             </button>
+
+            <div class="reply-buttons-container" v-if="connectionRequest.replyState">
+                <button class="option-button" id="accpet-button">
+                    Aceptar
+                </button>
+
+                <button class="option-button" id="reject-button">
+                    Rechazar
+                </button>
+            </div>
         </div>
 
     </div>
@@ -272,4 +283,25 @@ onMounted(async () => {
 #connect:hover {
     background-color: #62BD62;
 }
+
+.reply-buttons-container {
+    align-self: flex-end;
+    display: flex;
+    width: 12rem;
+    justify-content: space-between;
+}
+
+#accpet-button {
+    background-color: #62BD62;
+}
+
+#accpet-button:hover, #reject-button:hover {
+    color: white;
+}
+
+#reject-button {
+    background-color: red;
+}
+
+
 </style>
