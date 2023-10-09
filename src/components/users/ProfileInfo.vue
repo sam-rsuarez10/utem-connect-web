@@ -70,6 +70,38 @@ const sendConnectRequest = async () => {
     }
 };
 
+const handleRequestReply = async (reply) => {
+    /* the reply param should be 'accepted' or 'rejected' 
+    in order to be handled correctly by the backend */
+
+    try {
+
+        const response = await axios.patch(
+            `/connect-api/reply-request/${connectionRequest.id}`, 
+            {
+                reply: reply,
+            },
+            {
+                headers: {
+                    Authorization: `Token ${authStore.token}`,
+                },
+            }
+        );
+
+        if (response.status === 200 && reply == 'accepted') {
+            connectButtonState.isConnection = true;
+            connectionRequest.replyState = false;
+        } else if (response.status === 200 && reply == 'rejected') {
+            connectionRequest.replyState = false;
+            connectButtonState.isPending = false;
+            connectButtonState.isConnection = false;
+            connectButtonState.buttonText = 'Conectar';
+        }
+    } catch (error) {
+        console.error('Error proccesing reply: ', error);
+    }
+};
+
 const fetchInfo = async () => {
     try {
         const response = await fetchUserInfo(true, userInfo.username, authStore.token);
@@ -193,11 +225,11 @@ onMounted(async () => {
             </button>
 
             <div class="reply-buttons-container" v-if="connectionRequest.replyState">
-                <button class="option-button" id="accpet-button">
+                <button class="option-button" id="accpet-button" @click="handleRequestReply('accepted')">
                     Aceptar
                 </button>
 
-                <button class="option-button" id="reject-button">
+                <button class="option-button" id="reject-button" @click="handleRequestReply('rejected')">
                     Rechazar
                 </button>
             </div>

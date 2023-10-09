@@ -3,6 +3,16 @@ import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import ProfileInfo from '../components/users/ProfileInfo.vue';
 
+
+if (typeof document.hidden !== "undefined") {
+    // Add an event listener to the visibilitychange event
+    document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) {
+            // Tab has become visible, so refresh the page
+            location.reload();
+        }
+    });
+}
 </script>
 
 <template>
