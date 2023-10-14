@@ -16,25 +16,17 @@ if (typeof document.hidden !== "undefined") {
 </script>
 
 <template>
-    <div id="app">
-        <Header />
+    <Header />
 
-        <main>
-            <NavBar />
-            <ProfileInfo :username="$route.params.username"/>
-        </main>
+    <main>
+        <NavBar />
+        <ProfileInfo :username="$route.params.username" />
+    </main>
 
-        <Footer />
-    </div>
+    <Footer />
 </template>
 
 <style scoped>
-#app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
 main {
     flex-grow: 1;
     display: flex;

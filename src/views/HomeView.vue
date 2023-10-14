@@ -3,6 +3,7 @@ import { useAuthStore } from '../stores/auth';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
 import NavBar from '../components/NavBar.vue';
+import RightPanel from '../components/RightPanel.vue';
 
 const authStore = useAuthStore();
 const user = authStore.user;
@@ -28,17 +29,14 @@ const user = authStore.user;
           para la comunidad universitaria de la UTEM.
         </p>
       </div>
+      <!-- <RightPanel /> -->
     </main>
     <Footer />
   </div>
 </template>
 
 <style scoped>
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
+
 
 main {
   flex-grow: 1;

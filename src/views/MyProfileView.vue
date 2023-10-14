@@ -10,16 +10,14 @@ const user = authStore.user;
 </script>
 
 <template>
-    <div id="app">
-        <Header />
+    <Header />
 
-        <main>
-            <NavBar />
-            <MyProfileInfo />
-        </main>
+    <main>
+        <NavBar />
+        <MyProfileInfo />
+    </main>
 
-        <Footer />
-    </div>
+    <Footer />
 </template>
 
 <style scoped>

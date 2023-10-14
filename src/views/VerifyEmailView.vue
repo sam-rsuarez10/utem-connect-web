@@ -19,7 +19,7 @@ const resendState = reactive({
 });
 
 const verify = async () => {
-    if (!otpState.otp){
+    if (!otpState.otp) {
         otpState.invalid = true;
         otpState.errorMsg = 'ingresa un código de verificación válido';
         return;
@@ -27,7 +27,7 @@ const verify = async () => {
 
     const verifySuccess = await authStore.verifyUser(otpState.otp);
 
-    if (verifySuccess){
+    if (verifySuccess) {
         router.push('/login');
     } else {
         otpState.invalid = true;
@@ -36,7 +36,7 @@ const verify = async () => {
     }
 };
 
-const resendOtp = async() => {
+const resendOtp = async () => {
     const resendSuccess = await authStore.resendOtp();
     if (resendSuccess) {
         resendState.msg = 'código reenviado :)';
@@ -49,38 +49,33 @@ const resendOtp = async() => {
 </script>
 
 <template>
-    <div id="app">
-        <header>
-            <h1 id="header-title">UtemConnect</h1>
-        </header>
+    <header>
+        <h1 id="header-title">UtemConnect</h1>
+    </header>
 
-        <main>
-            <div class="container">
-                <span>Se envió un código de verificación a tu correo utem para validarlo (vigencia del código es de 10 min)</span>
-                <form class="row g-3">
-                    <div class="input-group mb-3">
-                        <input id="otp" type="text" class="form-control" placeholder="323067"
-                            aria-label="Recipient's username" aria-describedby="button-addon2" v-model="otpState.otp">
-                        <button class="btn verify-button" type="button" id="button-addon2" @click="verify">Confirmar</button>
-                    </div>
-                </form>
-                <span class="text-danger" v-if="otpState.invalid">{{ otpState.errorMsg }}</span>
-                <button id="resend-button" @click="resendOtp">reenviar código</button>
-                <span  v-if="resendState.msg" v-bind:class="{ 'text-success': resendState.success, 'text-danger': !resendState.success }" id="resend-msg">{{ resendState.msg }}</span>
-            </div>
-        </main>
+    <main>
+        <div class="container">
+            <span>Se envió un código de verificación a tu correo utem para validarlo (vigencia del código es de 10
+                min)</span>
+            <form class="row g-3">
+                <div class="input-group mb-3">
+                    <input id="otp" type="text" class="form-control" placeholder="323067" aria-label="Recipient's username"
+                        aria-describedby="button-addon2" v-model="otpState.otp">
+                    <button class="btn verify-button" type="button" id="button-addon2" @click="verify">Confirmar</button>
+                </div>
+            </form>
+            <span class="text-danger" v-if="otpState.invalid">{{ otpState.errorMsg }}</span>
+            <button id="resend-button" @click="resendOtp">reenviar código</button>
+            <span v-if="resendState.msg"
+                v-bind:class="{ 'text-success': resendState.success, 'text-danger': !resendState.success }"
+                id="resend-msg">{{ resendState.msg }}</span>
+        </div>
+    </main>
 
-        <Footer />
-    </div>
+    <Footer />
 </template>
 
 <style scoped>
-#app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
 header {
     display: flex;
     background-color: #0F7D70;
