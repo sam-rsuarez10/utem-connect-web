@@ -1,6 +1,5 @@
 <script setup>
 import Footer from '../components/Footer.vue'
-
 </script>
 
 <template>
@@ -20,16 +19,24 @@ import Footer from '../components/Footer.vue'
                 </div>
             </div>
         </main>
-
         <Footer />
     </div>
+
+    <div class="right-panel">
+        
+    </div>
 </template>
+
 
 <style scoped>
 #app {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    width: 50%;
+    /* Half of the viewport width */
+    position: relative;
+    /* Make sure the parent is a positioned element */
 }
 
 header {
@@ -75,5 +82,14 @@ main {
     width: 10rem;
     height: 3.5rem;
     border-radius: 5%;
+}
+
+.right-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    width: 50%;
+    background-color: #155C5F;
 }
 </style>
