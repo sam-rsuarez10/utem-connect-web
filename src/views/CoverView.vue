@@ -23,7 +23,13 @@ import Footer from '../components/Footer.vue'
     </div>
 
     <div class="right-panel">
-        
+        <div class="description-container">
+            <div class="presentation-logo"></div>
+            <p class="presentation-description">¡Bienvenido a UtemConnect! Somos la red social exclusiva de la Universidad 
+                Tecnológica Metropolitana, diseñada para que nuestros estudiantes interactúen 
+                y se conozcan entre sí. Conéctate con tus compañeros y forma nuevas amistades 
+                en un entorno especialmente creado para ti :) </p>
+        </div>
     </div>
 </template>
 
@@ -91,5 +97,34 @@ main {
     height: 100vh;
     width: 50%;
     background-color: #155C5F;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.description-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5rem;
+}
+
+.presentation-logo {
+    width: 20rem;
+    height: 20rem;
+    border-radius: 50%;
+    background-image: url('../assets/img/cover.jpeg');
+    background-size: cover;
+    background-position: center center;
+    order: -1;
+}
+
+.presentation-description {
+    width: 25rem;
+    text-align: center;
+    color: white;
+    font-size: 1.2rem;
+    font-family: 'Courier New', Courier, monospace;
 }
 </style>
