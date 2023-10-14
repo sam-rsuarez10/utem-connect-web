@@ -1,5 +1,5 @@
 <script setup>
-import { reactive } from 'vue';
+import { reactive, ref, onMounted } from 'vue';
 import Footer from '../components/Footer.vue';
 import { useAuthStore } from '../stores/auth';
 import { useRouter } from 'vue-router';
@@ -15,6 +15,8 @@ const userState = reactive({
     invalid: false,
     errorMsg: '',
 });
+
+const usernameInput = ref(null);
 
 const login = async () => {
     if (userState.username == '' || userState.password == ''){
@@ -32,6 +34,10 @@ const login = async () => {
         userState.errorMsg = 'credenciales incorrectas';
     }
 }
+
+onMounted(() => {
+    usernameInput.value.focus();
+});
 </script>
 
 <template>
@@ -45,12 +51,12 @@ const login = async () => {
                 <div class="login-container">
                     <div class="form-floating mb-3">
                         <input type="text" class="form-control" id="floatingInput" placeholder="Username"
-                            v-model="userState.username" required>
+                            v-model="userState.username" required @keydown.enter="login" ref="usernameInput">
                         <label for="floatingInput">Username</label>
                     </div>
                     <div class="form-floating">
                         <input type="password" class="form-control" id="floatingPassword" placeholder="Password"
-                            v-model="userState.password" required>
+                            v-model="userState.password" required @keydown.enter="login">
                         <label for="floatingPassword">Password</label>
                     </div>
                     <span class="text-danger" v-if="userState.invalid">{{ userState.errorMsg }}</span>
