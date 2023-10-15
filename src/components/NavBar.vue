@@ -1,18 +1,45 @@
-<script setup></script>
+<script setup>
+import { reactive } from 'vue';
+
+const emit = defineEmits();
+
+const navOption = reactive ({
+    title: '',
+    flag: '',
+});
+
+const showConnectPanel = () => {
+    navOption.title = 'Solicitudes de Conexión';
+    navOption.flag = 'connect';
+    emit('show-right-panel', navOption.title, navOption.flag);
+};
+
+const showChatPanel = () => {
+    navOption.title = 'Chats';
+    navOption.flag = 'chat';
+    emit('show-right-panel', navOption.title, navOption.flag);
+};
+
+const showSearchPanel = () => {
+    navOption.title = 'Búsqueda',
+    navOption.flag = 'search',
+    emit('show-right-panel', navOption.title, navOption.flag);
+};
+</script>
 
 <template>
     <nav class="vertical-navbar">
         <ul>
             <li class="nav-item">
-                <button class="nav-button">Chats</button>
+                <button class="nav-button" @click="showChatPanel">Chats</button>
             </li>
 
             <li class="nav-item">
-                <button class="nav-button">Connect</button>
+                <button class="nav-button" @click="showConnectPanel">Connect</button>
             </li>
 
             <li class="nav-item">
-                <button class="nav-button">Buscar</button>
+                <button class="nav-button" @click="showSearchPanel">Buscar</button>
             </li>
 
         </ul>
