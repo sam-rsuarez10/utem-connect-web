@@ -1,13 +1,18 @@
 <script setup>
 
+const emit = defineEmits();
+
 const panelProps = defineProps({
     title: String,
     flag: String,
 })
+
+const emitHidePanel = () => emit('hide-panel');
 </script>
 
 <template>
     <div class="right-panel">
+        <button id="hide-button" @click="emitHidePanel">Ocultar</button>
         <div id="panel-title">
             <h3>{{ panelProps.title }}</h3>
         </div>
@@ -41,5 +46,19 @@ const panelProps = defineProps({
 #panel-content {
     width: 100%;
     height: 90%;
+}
+
+#hide-button {
+    border: none;
+    background-color: #62BD62;
+    align-self: flex-start;
+    width: 5rem;
+    border-radius: 5%;
+    color: white;
+}
+
+#hide-button:hover {
+    background-color: #1C7E1C;
+    transition: 500ms;
 }
 </style>

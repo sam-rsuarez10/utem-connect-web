@@ -21,6 +21,10 @@ const showRightPanel = (title, flag) => {
   rightPanelOptions.isVisible = true;
 };
 
+const hidePanel = () => {
+  rightPanelOptions.isVisible = false;
+}
+
 </script>
 
 <template>
@@ -46,7 +50,8 @@ const showRightPanel = (title, flag) => {
       <RightPanel 
       v-if="rightPanelOptions.isVisible"
       :title="rightPanelOptions.title"
-      :flag="rightPanelOptions.flag"/>
+      :flag="rightPanelOptions.flag"
+      @hide-panel="hidePanel"/>
     </main>
     <Footer />
   </div>
