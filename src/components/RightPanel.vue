@@ -36,6 +36,10 @@ const fetchPanelInfo = async () => {
 
 onMounted(() => fetchPanelInfo());
 
+const deleteRequest = (requestId) => {
+    pendingRequests.value = pendingRequests.value.filter(request => request.id !== requestId);
+}
+
 </script>
 
 <template>
@@ -50,6 +54,7 @@ onMounted(() => fetchPanelInfo());
                 v-for="request in pendingRequests"
                 :key="request.id"
                 :request="request"
+                @delete-request-item="deleteRequest"
             />
         </div>
     </div>

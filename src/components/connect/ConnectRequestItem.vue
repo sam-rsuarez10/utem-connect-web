@@ -1,15 +1,31 @@
 <script setup>
-import { useRouter } from 'vue-router';
-import { ref } from 'vue';
+import { useAuthStore } from '../../stores/auth';
+import axios from '@/axios';
 
-const router = useRouter();
+const authStore = useAuthStore();
+
+const emit = defineEmits();
 
 const requestProps = defineProps({
     request: Object,
 });
 
-
-const userProfileURL = ref('/user/' + requestProps.request.user_from);
+const handleRequestReply = async (reply) => {
+    try {
+        const response = await axios.patch(
+            `/connect-api/reply-request/${requestProps.request.id}`, {
+                reply: reply
+            }, {
+                headers: {
+                    Authorization: `Token ${authStore.token}`
+                }
+            }
+        );
+        emit('delete-request-item', requestProps.request.id);
+    } catch (error) {
+        console.error('Error proccesing reply: ', error);
+    }
+};
 </script>
 
 <template>
@@ -19,10 +35,12 @@ const userProfileURL = ref('/user/' + requestProps.request.user_from);
             <span class="username-text">{{ request.user_from }}</span>
         </router-link>
         <div class="options">
-            <button class="option-button btn btn-success" id="accept">
+            <button class="option-button btn btn-success" id="accept"
+                @click="handleRequestReply('accepted')">
                 Aceptar
             </button>
-            <button class="option-button btn btn-danger" id="reject">
+            <button class="option-button btn btn-danger" id="reject"
+                @click="handleRequestReply('rejected')">
                 Rechazar
             </button>
         </div>

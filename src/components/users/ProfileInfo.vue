@@ -202,15 +202,11 @@ onMounted(async () => {
 });
 
 watch(() => props.username, async (newUsername, oldUsername) => {
-    console.log('new: ', newUsername);
-    console.log('old:', oldUsername)
     if (newUsername != oldUsername) {
-        console.log('refreshing...')
         await fetchInfo();
         const haveConnection = await checkExistingConnection();
         if (!haveConnection)
             await checkPendingRequest();
-        console.log('refreshed')
     }
 });
 
@@ -239,7 +235,7 @@ watch(() => props.username, async (newUsername, oldUsername) => {
             </button>
 
             <div class="reply-buttons-container" v-if="connectionRequest.replyState">
-                <button class="option-button" id="accpet-button" @click="handleRequestReply('accepted')">
+                <button class="option-button" id="accept-button" @click="handleRequestReply('accepted')">
                     Aceptar
                 </button>
 
@@ -337,11 +333,11 @@ watch(() => props.username, async (newUsername, oldUsername) => {
     justify-content: space-between;
 }
 
-#accpet-button {
+#accept-button {
     background-color: #62BD62;
 }
 
-#accpet-button:hover, #reject-button:hover {
+#accept-button:hover, #reject-button:hover {
     color: white;
 }
 
