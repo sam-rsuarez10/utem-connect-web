@@ -39,7 +39,9 @@ const hidePanel = () => {
     <main>
         <NavBar @show-right-panel="showRightPanel" />
         <ProfileInfo :username="$route.params.username" />
-        <RightPanel v-if="rightPanelOptions.isVisible" :title="rightPanelOptions.title" :flag="rightPanelOptions.flag"
+        <RightPanel v-if="rightPanelOptions.isVisible" 
+            :title="rightPanelOptions.title" 
+            :flag="rightPanelOptions.flag"
             @hide-panel="hidePanel" />
     </main>
 

@@ -1,5 +1,13 @@
 <script setup>
 import ConnectRequestItem from './connect/ConnectRequestItem.vue';
+import { ref, onMounted} from 'vue';
+import { useAuthStore } from '../stores/auth';
+import { fetchPendingRequests } from '../utils/fetchPendingRequests';
+
+const authStore = useAuthStore();
+const user = authStore.user;
+
+const pendingRequests = ref([]);
 
 const emit = defineEmits();
 
@@ -9,6 +17,25 @@ const panelProps = defineProps({
 })
 
 const emitHidePanel = () => emit('hide-panel');
+
+const fetchConnectRequests = async () => {
+    const response = await fetchPendingRequests(true, authStore.token);
+    pendingRequests.value = response.data.pending_requests;
+};
+
+const fetchPanelInfo = async () => {
+    try {
+        if (panelProps.flag == 'connect'){
+            // fetch pending requests
+            await fetchConnectRequests();
+        }
+    } catch (error) {
+        console.error('Error fetching data: ', error);
+    }
+};
+
+onMounted(() => fetchPanelInfo());
+
 </script>
 
 <template>
@@ -18,8 +45,12 @@ const emitHidePanel = () => emit('hide-panel');
             <h3>{{ panelProps.title }}</h3>
         </div>
 
-        <div class="panel-content">
-            <ConnectRequestItem v-if="panelProps.flag == 'connect'"/>
+        <div class="panel-content" v-if="panelProps.flag == 'connect'">
+            <ConnectRequestItem
+                v-for="request in pendingRequests"
+                :key="request.id"
+                :request="request"
+            />
         </div>
     </div>
 </template>

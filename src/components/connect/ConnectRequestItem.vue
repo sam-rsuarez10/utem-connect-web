@@ -1,9 +1,14 @@
-<script setup></script>
+<script setup>
+const requestProps = defineProps({
+    request: Object,
+});
+
+</script>
 
 <template>
     <div class="request-container">
         <div class="profile-photo"></div>
-        <span class="username-text">username</span>
+        <span class="username-text">{{ request.user_from }}</span>
         <div class="options">
             <button class="option-button btn btn-success" id="accept">
                 Aceptar
