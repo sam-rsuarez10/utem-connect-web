@@ -1,4 +1,5 @@
 <script setup>
+import ConnectRequestItem from './connect/ConnectRequestItem.vue';
 
 const emit = defineEmits();
 
@@ -17,9 +18,8 @@ const emitHidePanel = () => emit('hide-panel');
             <h3>{{ panelProps.title }}</h3>
         </div>
 
-        <div id="panel-content">
-            {{ panelProps.flag }}
-            content
+        <div class="panel-content">
+            <ConnectRequestItem v-if="panelProps.flag == 'connect'"/>
         </div>
     </div>
 </template>
@@ -43,7 +43,7 @@ const emitHidePanel = () => emit('hide-panel');
     padding: 1.5rem;
 }
 
-#panel-content {
+.panel-content {
     width: 100%;
     height: 90%;
 }
