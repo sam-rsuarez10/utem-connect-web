@@ -15,7 +15,7 @@ const userProfileURL = ref('/user/' + requestProps.request.user_from);
 <template>
     <div class="request-container">
         <div class="profile-photo"></div>
-        <router-link :to="`/user/${requestProps.request.user_from}`">
+        <router-link :to="`/user/${requestProps.request.user_from}`" class="router-link">
             <span class="username-text">{{ request.user_from }}</span>
         </router-link>
         <div class="options">
@@ -48,8 +48,13 @@ const userProfileURL = ref('/user/' + requestProps.request.user_from);
     margin-left: 0.75rem;
 }
 
-.username-text {
+.router-link {
     font-size: 1.2rem;
+    text-decoration: none;
+    color: white;
+}
+
+.router-link:hover {
     font-weight: bold;
 }
 
