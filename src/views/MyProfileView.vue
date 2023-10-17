@@ -13,7 +13,6 @@ const user = authStore.user;
 const rightPanelOptions = reactive({
     title: '',
     flag: '',
-    isVisible: false,
 });
 
 const showRightPanel = (title, flag) => {

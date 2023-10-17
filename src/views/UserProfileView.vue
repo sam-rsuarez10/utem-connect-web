@@ -19,7 +19,6 @@ if (typeof document.hidden !== "undefined") {
 const rightPanelOptions = reactive({
     title: '',
     flag: '',
-    isVisible: false,
 });
 
 const showRightPanel = (title, flag) => {

@@ -1,14 +1,23 @@
 <script setup>
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+
+const router = useRouter();
+
 const requestProps = defineProps({
     request: Object,
 });
 
+
+const userProfileURL = ref('/user/' + requestProps.request.user_from);
 </script>
 
 <template>
     <div class="request-container">
         <div class="profile-photo"></div>
-        <span class="username-text">{{ request.user_from }}</span>
+        <router-link :to="`/user/${requestProps.request.user_from}`">
+            <span class="username-text">{{ request.user_from }}</span>
+        </router-link>
         <div class="options">
             <button class="option-button btn btn-success" id="accept">
                 Aceptar

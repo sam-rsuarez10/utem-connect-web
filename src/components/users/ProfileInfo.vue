@@ -104,7 +104,8 @@ const handleRequestReply = async (reply) => {
 
 const fetchInfo = async () => {
     try {
-        const response = await fetchUserInfo(true, userInfo.username, authStore.token);
+        const response = await fetchUserInfo(true, props.username, authStore.token);
+        userInfo.username = props.username;
         const userData = response.data['user-info'];
 
         if (userData.middle_name) {
@@ -197,6 +198,19 @@ onMounted(async () => {
 
     } catch (error) {
         console.error('something went worng on mounting', error)
+    }
+});
+
+watch(() => props.username, async (newUsername, oldUsername) => {
+    console.log('new: ', newUsername);
+    console.log('old:', oldUsername)
+    if (newUsername != oldUsername) {
+        console.log('refreshing...')
+        await fetchInfo();
+        const haveConnection = await checkExistingConnection();
+        if (!haveConnection)
+            await checkPendingRequest();
+        console.log('refreshed')
     }
 });
 
