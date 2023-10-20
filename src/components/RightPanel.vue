@@ -1,13 +1,15 @@
 <script setup>
 import ConnectRequestItem from './connect/ConnectRequestItem.vue';
+import ChatItem from './chat/ChatItem.vue';
 import { ref, onMounted} from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { fetchPendingRequests } from '../utils/fetchPendingRequests';
+import { fetchUserChats } from '../utils/fetchUserChats';
 
 const authStore = useAuthStore();
-const user = authStore.user;
 
 const pendingRequests = ref([]);
+const chats = ref([]);
 
 const emit = defineEmits();
 
@@ -23,11 +25,18 @@ const fetchConnectRequests = async () => {
     pendingRequests.value = response.data.pending_requests;
 };
 
+const fetchChats = async () => {
+    const response = await fetchUserChats(true, authStore.token);
+    chats.value = response.data.user_chats;
+}
+
 const fetchPanelInfo = async () => {
     try {
         if (panelProps.flag == 'connect'){
             // fetch pending requests
             await fetchConnectRequests();
+        }  else if (panelProps.flag == 'chat') {
+            await fetchChats();
         }
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -49,12 +58,20 @@ const deleteRequest = (requestId) => {
             <h3>{{ panelProps.title }}</h3>
         </div>
 
-        <div class="panel-content" v-if="panelProps.flag == 'connect'">
+        <div class="panel-content">
             <ConnectRequestItem
                 v-for="request in pendingRequests"
                 :key="request.id"
                 :request="request"
                 @delete-request-item="deleteRequest"
+                v-if="panelProps.flag == 'connect'"
+            />
+
+            <ChatItem 
+                v-for="chat in chats"
+                :key="chat.id"
+                :chat="chat"
+                v-if="panelProps.flag == 'chat'"
             />
         </div>
     </div>
