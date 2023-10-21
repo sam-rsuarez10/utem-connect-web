@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+import MessageItem from './MessageItem.vue';
+</script>
 
 <template>
     <div class="chat-container">
@@ -6,11 +8,16 @@
             <div class="profile-photo"></div>
             <h3>Username</h3>
         </div>
-        <div class="chat-content"></div>
+        <div class="chat-content">
+            <MessageItem :my-message="true" :text="'hi'" />
+
+            <MessageItem :my-message="false" :text="'hi! how are u'" />
+
+        </div>
         <form action="#" class="message-input">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="escribe un mensaje..." aria-label="Recipient's username"
-                    aria-describedby="button-addon2">
+                <input type="text" class="form-control" placeholder="escribe un mensaje..."
+                    aria-label="Recipient's username" aria-describedby="button-addon2">
                 <button class="btn btn-primary" type="submit" id="button-addon2">enviar</button>
             </div>
         </form>
@@ -65,6 +72,8 @@ h3 {
     margin: 1rem;
     /* Add margin for spacing */
     border-radius: 5%;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
 }
 
 .message-input {
