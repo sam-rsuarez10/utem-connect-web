@@ -28,38 +28,31 @@ const hidePanel = () => {
 </script>
 
 <template>
-  <div id="app">
-    <Header />
-    <main>
-      <NavBar @show-right-panel="showRightPanel"/>
-      <div class="container">
-        <h1>Home</h1>
-        <div v-if="authStore.isAuthenticated">
-          <p>Welcome, {{ user }}!</p>
-        </div>
+  <Header />
+  <main>
+    <NavBar @show-right-panel="showRightPanel" />
+    <div class="container">
+      <h1>Home</h1>
+      <div v-if="authStore.isAuthenticated">
+        <p>Welcome, {{ user }}!</p>
       </div>
-      <div class="welcome-container">
-        <i class='bx bxs-smile bx-lg' style='color:#62bd62'  ></i>
-        <p class="welcome">
-          ¡Hola {{ user }}! Conéctate, busca amigos, 
-          envía solicitudes, chatea en privado y comparte tus pensamientos 
-          e ideas en un espacio diseñado 
-          para la comunidad universitaria de la UTEM.
-        </p>
-      </div>
-      <RightPanel 
-      v-if="rightPanelOptions.isVisible"
-      :title="rightPanelOptions.title"
-      :flag="rightPanelOptions.flag"
-      @hide-panel="hidePanel"/>
-    </main>
-    <Footer />
-  </div>
+    </div>
+    <div class="welcome-container">
+      <i class='bx bxs-smile bx-lg' style='color:#62bd62'></i>
+      <p class="welcome">
+        ¡Hola {{ user }}! Conéctate, busca amigos,
+        envía solicitudes, chatea en privado y comparte tus pensamientos
+        e ideas en un espacio diseñado
+        para la comunidad universitaria de la UTEM.
+      </p>
+    </div>
+    <RightPanel v-if="rightPanelOptions.isVisible" :title="rightPanelOptions.title" :flag="rightPanelOptions.flag"
+      @hide-panel="hidePanel" />
+  </main>
+  <Footer />
 </template>
 
 <style scoped>
-
-
 main {
   flex-grow: 1;
   display: flex;
@@ -84,5 +77,4 @@ main {
   font-size: 0.85rem;
   color: white;
 }
-
 </style>
