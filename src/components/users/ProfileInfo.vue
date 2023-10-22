@@ -2,9 +2,11 @@
 import { useAuthStore } from '../../stores/auth';
 import { onMounted, reactive, computed, watch } from 'vue';
 import { fetchUserInfo } from '../../utils/fetchUserInfo';
+import { useRouter } from 'vue-router';
 import axios from '@/axios';
 
 const authStore = useAuthStore();
+const router = useRouter();
 
 const connectButtonState = reactive({
     isConnection: false, // user is not a connection with logged user
@@ -46,9 +48,6 @@ const connectionRequest = reactive({
 
 const sendConnectRequest = async () => {
 
-    if (connectButtonState.isConnection || connectButtonState.isPending)
-        return;
-
     try {
         const response = await axios.post(
             '/connect-api/send',
@@ -69,6 +68,40 @@ const sendConnectRequest = async () => {
         console.error('Error sending request: ', error);
     }
 };
+
+const createChat = async () => {
+    try {
+        const response = await axios.post(
+            '/chat-api/chats',
+            {
+                first_user: authStore.user,
+                second_user: userInfo.username,
+            },
+            {
+                headers: {
+                    Authorization: `Token ${authStore.token}`,
+                },
+            }
+        );
+
+        if (response.status === 200 || response.status === 201) {
+            router.push(`/chat/${response.data['chat'].id}`);
+        }
+    } catch (error) {
+        console.error('Error creating chat: ', error);
+    }
+};
+
+const handleConnectButtonClick = () => {
+    if (connectButtonState.isPending)
+        return;
+
+    if (connectButtonState.isConnection) {
+        createChat();
+    } else {
+        sendConnectRequest();
+    }
+}
 
 const handleRequestReply = async (reply) => {
     /* the reply param should be 'accepted' or 'rejected' 
@@ -176,7 +209,7 @@ const checkExistingConnection = async () => {
         });
 
         if (response.data['connection'] != 'null') {
-            connectButtonState.buttonText = 'Chat';
+            connectButtonState.isConnection = true;
             return true;
         }
 
@@ -197,7 +230,7 @@ onMounted(async () => {
             await checkPendingRequest();
 
     } catch (error) {
-        console.error('something went worng on mounting', error)
+        console.error('something went wrong on mounting', error)
     }
 });
 
@@ -230,7 +263,7 @@ watch(() => props.username, async (newUsername, oldUsername) => {
                 <p id="description">{{ userInfo.description }}</p>
             </div>
 
-            <button class="option-button" id="connect" @click="sendConnectRequest" v-if="!connectionRequest.replyState">
+            <button class="option-button" id="connect" @click="handleConnectButtonClick" v-if="!connectionRequest.replyState">
                 {{ connectButtonState.buttonText }}
             </button>
 
