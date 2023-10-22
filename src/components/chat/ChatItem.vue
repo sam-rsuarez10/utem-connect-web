@@ -9,7 +9,9 @@ const chatProps = defineProps({
 <template>
     <div class="chat-container">
         <div class="profile-photo"></div>
-        <span class="username-text">{{ chat.other_user }}</span>
+        <router-link :to="`/chat/${chat.id}`" class="router-link">
+            <span class="username-text">{{ chat.other_user }}</span>
+        </router-link>
     </div>
 </template>
 
@@ -36,9 +38,12 @@ const chatProps = defineProps({
 
 .username-text {
     font-size: 1.2rem;
-    text-decoration: none;
     color: white;
     flex: 1;
+}
+
+.router-link {
+    text-decoration: none;
 }
 
 .router-link:hover {

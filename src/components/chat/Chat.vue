@@ -1,12 +1,61 @@
 <script setup>
+import axios from "@/axios";
+import { onMounted, reactive, watch } from "vue";
+import { useAuthStore } from "../../stores/auth";
 import MessageItem from './MessageItem.vue';
+
+const authStore = useAuthStore();
+
+const chatProps = defineProps({
+    chatId: String,
+});
+
+const chatDetail = reactive({
+    other_user: '',
+});
+
+const chatSocket = new WebSocket(
+    `ws://${window.location.host}/ws/${chatProps.chatId}`);
+
+chatSocket.onmessage = function(e) {
+    console.log('onmessage');
+}
+
+chatSocket.onclose = function(e) {
+    console.log('onclose');
+}
+
+const fetchChat = async () => {
+    try {
+        const response = await axios.get(`/chat-api/chat/${chatProps.chatId}`, {
+            headers: {
+                Authorization: `Token ${authStore.token}`
+            }
+        })
+
+        if (response.status == 200){
+            chatDetail.other_user = response.data['chat'].other_user;
+        }
+    } catch (error){
+        console.error('error fetching chat: ', error);
+    }
+}
+
+onMounted(async () => {
+    await fetchChat();
+});
+
+watch(() => chatProps.chatId, async (newId, oldId) => {
+    if (newId != oldId)
+        await fetchChat();
+});
 </script>
 
 <template>
     <div class="chat-container">
         <div class="chat-header">
             <div class="profile-photo"></div>
-            <h3>Username</h3>
+            <h3>{{ chatDetail.other_user }}</h3>
         </div>
         <div class="chat-content">
             <MessageItem :my-message="true" :text="'hi'" />

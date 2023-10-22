@@ -30,7 +30,7 @@ const hidePanel = () => {
     <main>
         <NavBar @show-right-panel="showRightPanel" />
 
-        <Chat />
+        <Chat :chat-id="$route.params.chatId"/>
 
         <RightPanel v-if="rightPanelOptions.isVisible" :title="rightPanelOptions.title" :flag="rightPanelOptions.flag"
             @hide-panel="hidePanel" />
