@@ -7,12 +7,13 @@ const chatProps = defineProps({
 </script>
 
 <template>
-    <div class="chat-container">
-        <div class="profile-photo"></div>
-        <router-link :to="`/chat/${chat.id}`" class="router-link">
+    <router-link :to="`/chat/${chat.id}`" class="router-link">
+        <div class="chat-container">
+            <div class="profile-photo"></div>
             <span class="username-text">{{ chat.other_user }}</span>
-        </router-link>
-    </div>
+
+        </div>
+    </router-link>
 </template>
 
 <style scoped>
