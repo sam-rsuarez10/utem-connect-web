@@ -14,16 +14,34 @@ const chatDetail = reactive({
     other_user: '',
 });
 
-const chatSocket = new WebSocket(
-    `ws://${window.location.host}/ws/${chatProps.chatId}`);
+let chatSocket = null; // Define the WebSocket variable
 
-chatSocket.onmessage = function(e) {
-    console.log('onmessage');
-}
+const initiateWebSocket = () => {
+    if (chatSocket) {
+        // Close any existing WebSocket connection
+        chatSocket.close();
+    }
 
-chatSocket.onclose = function(e) {
-    console.log('onclose');
-}
+    chatSocket = new WebSocket(
+        `ws://${axios.defaults.baseURL.replace('http://', '')}/ws/${chatProps.chatId}`
+    );
+
+    chatSocket.onopen = function (event) {
+        console.log('WebSocket connection established:', event);
+    };
+
+    chatSocket.onerror = function (event) {
+        console.error('WebSocket error:', event);
+    };
+
+    chatSocket.onmessage = function (e) {
+        console.log('onmessage');
+    };
+
+    chatSocket.onclose = function (e) {
+        console.log('onclose');
+    };
+};
 
 const fetchChat = async () => {
     try {
@@ -33,21 +51,24 @@ const fetchChat = async () => {
             }
         })
 
-        if (response.status == 200){
+        if (response.status == 200) {
             chatDetail.other_user = response.data['chat'].other_user;
         }
-    } catch (error){
+    } catch (error) {
         console.error('error fetching chat: ', error);
     }
 }
 
 onMounted(async () => {
     await fetchChat();
+    initiateWebSocket();
 });
 
 watch(() => chatProps.chatId, async (newId, oldId) => {
-    if (newId != oldId)
+    if (newId != oldId) {
         await fetchChat();
+        initiateWebSocket();
+    }
 });
 </script>
 
