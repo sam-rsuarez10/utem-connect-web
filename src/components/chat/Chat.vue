@@ -43,7 +43,7 @@ const initiateWebSocket = () => {
 
         if (data.message) {
             const myMessage = data.username == authStore.user;
-            chatDetail.messages.push({text: data.message, myMessage });
+            chatDetail.messages.push({ text: data.message, myMessage });
         }
     };
 
@@ -62,6 +62,24 @@ const fetchChat = async () => {
 
         if (response.status == 200) {
             chatDetail.other_user = response.data['chat'].other_user;
+
+            chatDetail.messages = [];
+
+            for (const message of response.data.messages) {
+                chatDetail.messages.push({
+                    text: message.text,
+                    myMessage: message.owner == authStore.user,
+                });
+            }  // Clear existing messages
+            chatDetail.messages = [];
+
+            // Process and append messages to the array
+            for (const message of response.data.messages) {
+                chatDetail.messages.push({
+                    text: message.text,
+                    myMessage: message.owner === authStore.user,
+                });
+            }
         }
     } catch (error) {
         console.error('error fetching chat: ', error);
@@ -77,7 +95,7 @@ const sendMessage = () => {
     chatSocket.send(JSON.stringify({
         'message': textMessage,
         'username': authStore.user,
-        'chat-id': chatProps.chatId
+        'chat_id': chatProps.chatId
     }));
 
     messageInput.value = '';
@@ -106,18 +124,15 @@ watch(() => chatProps.chatId, async (newId, oldId) => {
             <h3>{{ chatDetail.other_user }}</h3>
         </div>
         <div class="chat-content">
-            <MessageItem 
-                v-for="(message, index) in chatDetail.messages"
-                :key="index"
-                :text="message.text"
-                :myMessage="message.myMessage"
-            />
+            <MessageItem v-for="(message, index) in chatDetail.messages" :key="index" :text="message.text"
+                :myMessage="message.myMessage" />
         </div>
         <form class="message-input" @submit.prevent="sendMessage">
             <div class="input-group mb-3">
-                <input  v-model="messageInput" ref="inputRef" id="input-message" type="text" class="form-control" placeholder="escribe un mensaje..."
-                    aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button @click="sendMessage" @keydown.enter="sendMessage" class="btn btn-primary" type="submit" id="send-button">enviar</button>
+                <input v-model="messageInput" ref="inputRef" id="input-message" type="text" class="form-control"
+                    placeholder="escribe un mensaje..." aria-label="Recipient's username" aria-describedby="button-addon2">
+                <button @click="sendMessage" @keydown.enter="sendMessage" class="btn btn-primary" type="submit"
+                    id="send-button">enviar</button>
             </div>
         </form>
     </div>
