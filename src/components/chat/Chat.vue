@@ -1,6 +1,6 @@
 <script setup>
 import axios from "@/axios";
-import { onMounted, reactive, watch } from "vue";
+import { onMounted, reactive, watch, ref } from "vue";
 import { useAuthStore } from "../../stores/auth";
 import MessageItem from './MessageItem.vue';
 
@@ -12,7 +12,11 @@ const chatProps = defineProps({
 
 const chatDetail = reactive({
     other_user: '',
+    messages: [],
 });
+
+const messageInput = ref(null);
+const inputRef = ref();
 
 let chatSocket = null; // Define the WebSocket variable
 
@@ -34,12 +38,17 @@ const initiateWebSocket = () => {
         console.error('WebSocket error:', event);
     };
 
-    chatSocket.onmessage = function (e) {
-        console.log('onmessage');
+    chatSocket.onmessage = function (event) {
+        const data = JSON.parse(event.data);
+
+        if (data.message) {
+            const myMessage = data.username == authStore.user;
+            chatDetail.messages.push({text: data.message, myMessage });
+        }
     };
 
-    chatSocket.onclose = function (e) {
-        console.log('onclose');
+    chatSocket.onclose = function (event) {
+        console.log('closing websocket connection...');
     };
 };
 
@@ -59,15 +68,33 @@ const fetchChat = async () => {
     }
 }
 
+const sendMessage = () => {
+    const textMessage = messageInput.value.trim();
+
+    if (textMessage === '')
+        return;
+
+    chatSocket.send(JSON.stringify({
+        'message': textMessage,
+        'username': authStore.user,
+        'chat-id': chatProps.chatId
+    }));
+
+    messageInput.value = '';
+};
+
 onMounted(async () => {
     await fetchChat();
     initiateWebSocket();
+    inputRef.value.focus();
+
 });
 
 watch(() => chatProps.chatId, async (newId, oldId) => {
     if (newId != oldId) {
         await fetchChat();
         initiateWebSocket();
+        inputRef.value.focus();
     }
 });
 </script>
@@ -79,16 +106,18 @@ watch(() => chatProps.chatId, async (newId, oldId) => {
             <h3>{{ chatDetail.other_user }}</h3>
         </div>
         <div class="chat-content">
-            <MessageItem :my-message="true" :text="'hi'" />
-
-            <MessageItem :my-message="false" :text="'hi! how are u'" />
-
+            <MessageItem 
+                v-for="(message, index) in chatDetail.messages"
+                :key="index"
+                :text="message.text"
+                :myMessage="message.myMessage"
+            />
         </div>
-        <form action="#" class="message-input">
+        <form class="message-input" @submit.prevent="sendMessage">
             <div class="input-group mb-3">
-                <input type="text" class="form-control" placeholder="escribe un mensaje..."
+                <input  v-model="messageInput" ref="inputRef" id="input-message" type="text" class="form-control" placeholder="escribe un mensaje..."
                     aria-label="Recipient's username" aria-describedby="button-addon2">
-                <button class="btn btn-primary" type="submit" id="button-addon2">enviar</button>
+                <button @click="sendMessage" @keydown.enter="sendMessage" class="btn btn-primary" type="submit" id="send-button">enviar</button>
             </div>
         </form>
     </div>
@@ -162,12 +191,5 @@ h3 {
     /* Take up remaining space */
     margin-right: 1rem;
     /* Add margin for spacing */
-}
-
-#send-button {
-    background-color: #69BF64;
-    /* Adjust the style as needed */
-    color: white;
-    border: none;
 }
 </style>
