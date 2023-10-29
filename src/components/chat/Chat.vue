@@ -1,6 +1,6 @@
 <script setup>
 import axios from "@/axios";
-import { onMounted, reactive, watch, ref } from "vue";
+import { onMounted, reactive, watch, ref, computed } from "vue";
 import { useAuthStore } from "../../stores/auth";
 import MessageItem from './MessageItem.vue';
 
@@ -17,6 +17,8 @@ const chatDetail = reactive({
 
 const messageInput = ref(null);
 const inputRef = ref();
+
+const chatContentRef = ref();
 
 let chatSocket = null; // Define the WebSocket variable
 
@@ -45,6 +47,8 @@ const initiateWebSocket = () => {
             const myMessage = data.username == authStore.user;
             chatDetail.messages.push({ text: data.message, myMessage });
         }
+
+        scrollToBottom();
     };
 
     chatSocket.onclose = function (event) {
@@ -105,6 +109,7 @@ onMounted(async () => {
     await fetchChat();
     initiateWebSocket();
     inputRef.value.focus();
+    scrollToBottom(0);
 
 });
 
@@ -113,8 +118,17 @@ watch(() => chatProps.chatId, async (newId, oldId) => {
         await fetchChat();
         initiateWebSocket();
         inputRef.value.focus();
+        scrollToBottom();
     }
 });
+
+
+const scrollToBottom = () => {
+    const chatContent = chatContentRef.value;
+    if (!chatContent)
+        return;
+    chatContent.scrollTop = chatContent.scrollHeight;
+};
 </script>
 
 <template>
@@ -123,7 +137,7 @@ watch(() => chatProps.chatId, async (newId, oldId) => {
             <div class="profile-photo"></div>
             <h3>{{ chatDetail.other_user }}</h3>
         </div>
-        <div class="chat-content">
+        <div class="chat-content" ref="chatContentRef">
             <MessageItem v-for="(message, index) in chatDetail.messages" :key="index" :text="message.text"
                 :myMessage="message.myMessage" />
         </div>
@@ -179,15 +193,37 @@ h3 {
 }
 
 .chat-content {
-    flex: 1;
-    /* Fill the remaining space */
+    height: 35rem;
     background-color: #82B7B7;
-    /* Adjust the style as needed */
     margin: 1rem;
-    /* Add margin for spacing */
     border-radius: 5%;
     padding-top: 1rem;
-    padding-bottom: 1rem;
+    padding-bottom: 3rem;
+    overflow-y: scroll;
+    max-height: 35rem;
+
+    /* Customize scrollbar appearance */
+
+
+    /* Hide scrollbar by default */
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+
+    /* Handle on hover */
+    &:hover::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+
+    /* Customize scrollbar track */
+    &::-webkit-scrollbar-track {
+        background: #155C5F;
+    }
+
+    /* Customize scrollbar thumb */
+    &::-webkit-scrollbar-thumb {
+        background: #061F44;
+    }
 }
 
 .message-input {
