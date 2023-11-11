@@ -15,6 +15,7 @@ const authStore = useAuthStore();
 const pendingRequests = ref([]);
 const chats = ref([]);
 const searchInputRef = ref();
+const filterInputRef = ref();
 
 const emit = defineEmits();
 
@@ -45,6 +46,8 @@ const fetchPanelInfo = async () => {
         } else if (panelProps.flag == 'search') {
             await nextTick();
             searchInputRef.value.focus();
+        } else {
+            filterInputRef.value.focus();
         }
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -76,6 +79,12 @@ const deleteRequest = (requestId) => {
             <input type="text" class="form-control" placeholder="escribe un nombre o correo utem"
                 aria-label="Recipient's username" aria-describedby="button-addon2" ref="searchInputRef">
             <button class="btn btn-primary" type="button" id="quick-search-button">buscar</button>
+        </div>
+
+        <div class="input-group mb-3 filter-input" v-if="panelProps.flag === 'filters'">
+            <input type="text" class="form-control" placeholder="escribe un filtro de búsqueda"
+                aria-label="Recipient's username" aria-describedby="button-addon2" ref="filterInputRef">
+            <button class="btn btn-primary" type="button" id="add-filter-button">añadir</button>
         </div>
 
         <div class="panel-content">
@@ -159,7 +168,7 @@ const deleteRequest = (requestId) => {
     margin-bottom: 1rem;
 }
 
-.search-input {
+.search-input, .filter-input {
     width: 90%;
 }
 
