@@ -5,6 +5,10 @@ import { ref, onMounted, watch, nextTick } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { fetchPendingRequests } from '../utils/fetchPendingRequests';
 import { fetchUserChats } from '../utils/fetchUserChats';
+import RightPanelSearchItem from './search/RightPanelSearchItem.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const authStore = useAuthStore();
 
@@ -38,7 +42,7 @@ const fetchPanelInfo = async () => {
             await fetchConnectRequests();
         } else if (panelProps.flag == 'chat') {
             await fetchChats();
-        } else {
+        } else if (panelProps.flag == 'search') {
             await nextTick();
             searchInputRef.value.focus();
         }
@@ -80,9 +84,11 @@ const deleteRequest = (requestId) => {
                 @delete-request-item="deleteRequest" v-if="panelProps.flag == 'connect'" />
 
             <ChatItem v-for="chat in chats" :key="chat.id" :chat="chat" v-if="panelProps.flag == 'chat'" />
+
+            <RightPanelSearchItem v-if="panelProps.flag === 'search'" />
         </div>
 
-        <button v-if="panelProps.flag === 'search'" @click="" class="search-button">búsqueda
+        <button v-if="panelProps.flag === 'search'" @click="router.push('/search');" class="search-button">búsqueda
             avanzada</button>
     </div>
 </template>
@@ -109,6 +115,27 @@ const deleteRequest = (requestId) => {
 .panel-content {
     width: 100%;
     height: 90%;
+    overflow-y: auto;
+
+    /* Hide scrollbar by default */
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+
+    /* Handle on hover */
+    &:hover::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+
+    /* Customize scrollbar track */
+    &::-webkit-scrollbar-track {
+        background: #155C5F;
+    }
+
+    /* Customize scrollbar thumb */
+    &::-webkit-scrollbar-thumb {
+        background: #82B7B7;
+    }
 }
 
 #hide-button {

@@ -28,7 +28,7 @@ const hidePanel = () => {
     <Header />
 
     <main>
-        <NavBar @show-right-panel="showRightPanel" />
+        <NavBar @show-right-panel="showRightPanel" :is-search-view="false"/>
 
         <Chat :chat-id="$route.params.chatId"/>
 

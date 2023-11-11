@@ -3,6 +3,10 @@ import { reactive } from 'vue';
 
 const emit = defineEmits();
 
+const viewProps =  defineProps({
+    isSearchView: Boolean,
+});
+
 const navOption = reactive ({
     title: '',
     flag: '',
@@ -21,8 +25,13 @@ const showChatPanel = () => {
 };
 
 const showSearchPanel = () => {
-    navOption.title = 'Búsqueda',
-    navOption.flag = 'search',
+    if (viewProps.isSearchView) {
+        navOption.title = 'Filtros de búsqueda';
+        navOption.flag = 'filters';
+    } else {
+        navOption.title = 'Búsqueda';
+        navOption.flag = 'search';
+    }
     emit('show-right-panel', navOption.title, navOption.flag);
 };
 </script>
@@ -39,7 +48,7 @@ const showSearchPanel = () => {
             </li>
 
             <li class="nav-item">
-                <button class="nav-button" @click="showSearchPanel">Buscar</button>
+                <button class="nav-button" @click="showSearchPanel">{{ isSearchView ? 'Filtros' : 'Buscar' }}</button>
             </li>
 
         </ul>

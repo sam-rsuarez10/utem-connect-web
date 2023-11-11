@@ -30,7 +30,7 @@ const hidePanel = () => {
 <template>
   <Header />
   <main>
-    <NavBar @show-right-panel="showRightPanel" />
+    <NavBar @show-right-panel="showRightPanel" :is-search-view="false"/>
     <div class="container">
       <h1>Home</h1>
       <div v-if="authStore.isAuthenticated">

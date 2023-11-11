@@ -1,18 +1,15 @@
 <script setup>
-import { useAuthStore } from '../stores/auth';
 import Header from '../components/Header.vue';
 import Footer from '../components/Footer.vue';
-import MyProfileInfo from '../components/users/MyProfileInfo.vue';
 import NavBar from '../components/NavBar.vue';
 import RightPanel from '../components/RightPanel.vue';
 import { reactive } from 'vue';
-
-const authStore = useAuthStore();
-const user = authStore.user;
+import SearchContainer from '../components/search/SearchContainer.vue';
 
 const rightPanelOptions = reactive({
     title: '',
     flag: '',
+    isVisible: false,
 });
 
 const showRightPanel = (title, flag) => {
@@ -24,21 +21,23 @@ const showRightPanel = (title, flag) => {
 const hidePanel = () => {
     rightPanelOptions.isVisible = false;
 }
+
 </script>
 
 <template>
     <Header />
 
     <main>
-        <NavBar @show-right-panel="showRightPanel" :is-search-view="false"/>
-        <MyProfileInfo />
-        <RightPanel v-if="rightPanelOptions.isVisible" 
-            :title="rightPanelOptions.title" 
-            :flag="rightPanelOptions.flag"
+        <NavBar @show-right-panel="showRightPanel" :is-search-view="true"/>
+        
+        <SearchContainer />
+
+        <RightPanel v-if="rightPanelOptions.isVisible" :title="rightPanelOptions.title" :flag="rightPanelOptions.flag"
             @hide-panel="hidePanel" />
     </main>
 
     <Footer />
+
 </template>
 
 <style scoped>

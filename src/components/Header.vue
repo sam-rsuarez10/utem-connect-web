@@ -57,6 +57,11 @@ header {
     color: white;
 }
 
+#header-title:hover {
+    font-size: 2.7rem;
+    transition: 700ms;
+}
+
 .dropdown {
     padding-right: 5rem;
     color: white;
@@ -82,5 +87,4 @@ header {
 
 .router-link {
     text-decoration: none;
-}
-</style>
+}</style>
