@@ -1,4 +1,9 @@
 <script setup>
+
+
+const props = defineProps({
+    text: String,
+});
 </script>
 
 <template>
@@ -8,13 +13,12 @@
             <span class="username-text">username</span>
         </div>
         <div class="card-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-</p>
+            <p> {{ props.text }} </p>
         </div>
         <div class="card-footer">
             <div class="interactions">
-                <i title="like" class='bx bxs-heart bx-md' style='color:#a00000'  ></i>
-                <i title="responder" class='bx bxs-paper-plane bx-md' style='color:#155c5f'  ></i>
+                <i title="like" class='bx bxs-heart bx-md bx-tada-hover' style='color:#a00000'  ></i>
+                <i title="responder" class='bx bxs-paper-plane bx-md bx-tada-hover' style='color:#155c5f'  ></i>
             </div>
         </div>
     </div>
@@ -31,7 +35,7 @@
 
 .card {
     width: 20rem;
-    min-height: 10rem;
+    min-height: fit-content;
     max-height: 20rem;
     box-shadow: 0 0.75rem 1rem rgba(0, 0, 0, 0.2);
     display: flex;
@@ -43,6 +47,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    background-color: #ccc;
 }
 
 .username-text {
@@ -58,15 +63,13 @@
     flex: 1;
     padding: 0.625rem;
     overflow: auto;
+    background-color: #CBF9FF;
 }
 
 .card-footer {
-    padding: 0.625rem;
-    text-align: right;
+    background-color: #ccc;
+    display: flex;
+    justify-content: flex-end;
 }
 
-.like-responder {
-    font-size: 0.75rem;
-    color: #ccc;
-}
 </style>

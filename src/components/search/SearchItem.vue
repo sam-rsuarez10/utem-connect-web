@@ -17,8 +17,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    border-top: 0.1rem solid #69BF64;
-    border-bottom: 0.1rem solid #69BF64;
+    border: 0.1rem solid #69BF64;
     height: 4rem;
     background-color: #20356A;
     width: 100%;

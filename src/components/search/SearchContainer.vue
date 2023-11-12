@@ -21,6 +21,10 @@ onMounted(() => inputRef.value.focus())
 
         <div class="user-search">
             <SearchItem />
+            <SearchItem />
+            <SearchItem />
+            <SearchItem />
+            <SearchItem />
         </div>
     </div>
 </template>
