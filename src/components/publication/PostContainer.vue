@@ -1,5 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
+import PostCard from './PostCard.vue';
 
 const inputRef = ref();
 
@@ -19,6 +20,7 @@ onMounted(() => inputRef.value.focus())
         </div>
 
         <div class="post-content">
+            <PostCard />
         </div>
     </div>
 </template>
@@ -70,7 +72,7 @@ onMounted(() => inputRef.value.focus())
 
 .post-input {
     margin: 2rem;
-    width: 90%;
+    width: 70%;
 }
 
 </style>
