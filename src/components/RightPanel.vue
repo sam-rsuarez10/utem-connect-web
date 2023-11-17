@@ -7,6 +7,7 @@ import { fetchPendingRequests } from '../utils/fetchPendingRequests';
 import { fetchUserChats } from '../utils/fetchUserChats';
 import RightPanelSearchItem from './search/RightPanelSearchItem.vue';
 import { useRouter } from 'vue-router';
+import FilterItem from './search/FilterItem.vue';
 
 const router = useRouter();
 
@@ -15,7 +16,6 @@ const authStore = useAuthStore();
 const pendingRequests = ref([]);
 const chats = ref([]);
 const searchInputRef = ref();
-const filterInputRef = ref();
 
 const emit = defineEmits();
 
@@ -46,8 +46,6 @@ const fetchPanelInfo = async () => {
         } else if (panelProps.flag == 'search') {
             await nextTick();
             searchInputRef.value.focus();
-        } else {
-            filterInputRef.value.focus();
         }
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -81,12 +79,6 @@ const deleteRequest = (requestId) => {
             <button class="btn btn-primary" type="button" id="quick-search-button">buscar</button>
         </div>
 
-        <div class="input-group mb-3 filter-input" v-if="panelProps.flag === 'filters'">
-            <input type="text" class="form-control" placeholder="escribe un filtro de búsqueda"
-                aria-label="Recipient's username" aria-describedby="button-addon2" ref="filterInputRef">
-            <button class="btn btn-primary" type="button" id="add-filter-button">añadir</button>
-        </div>
-
         <div class="panel-content">
 
             <ConnectRequestItem v-for="request in pendingRequests" :key="request.id" :request="request"
@@ -95,10 +87,14 @@ const deleteRequest = (requestId) => {
             <ChatItem v-for="chat in chats" :key="chat.id" :chat="chat" v-if="panelProps.flag == 'chat'" />
 
             <RightPanelSearchItem v-if="panelProps.flag === 'search'" />
+
+            <FilterItem :filter-name="'carrera'" v-if="panelProps.flag === 'filters'" />
+            <FilterItem :filter-name="'descripciones clave'" v-if="panelProps.flag === 'filters'" />
         </div>
 
         <button v-if="panelProps.flag === 'search'" @click="router.push('/search');" class="search-button">búsqueda
             avanzada</button>
+
     </div>
 </template>
 
@@ -168,7 +164,8 @@ const deleteRequest = (requestId) => {
     margin-bottom: 1rem;
 }
 
-.search-input, .filter-input {
+.search-input,
+.filter-input {
     width: 90%;
 }
 
