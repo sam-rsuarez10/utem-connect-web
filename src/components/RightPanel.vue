@@ -9,6 +9,7 @@ import RightPanelSearchItem from './search/RightPanelSearchItem.vue';
 import { useRouter } from 'vue-router';
 import FilterItem from './search/FilterItem.vue';
 import ConnectionItem from './users/ConnectionItem.vue';
+import { fetchUserConnections } from '../utils/fetchConnections';
 
 const router = useRouter();
 
@@ -17,6 +18,7 @@ const authStore = useAuthStore();
 const pendingRequests = ref([]);
 const chats = ref([]);
 const searchInputRef = ref();
+const connections = ref([]);
 
 const emit = defineEmits();
 
@@ -37,6 +39,11 @@ const fetchChats = async () => {
     chats.value = response.data.user_chats;
 }
 
+const fetchConnections = async () => {
+    const response = await fetchUserConnections(true, authStore.token);
+    connections.value = response.data.connections;
+}
+
 const fetchPanelInfo = async () => {
     try {
         if (panelProps.flag == 'connect') {
@@ -47,6 +54,8 @@ const fetchPanelInfo = async () => {
         } else if (panelProps.flag == 'search') {
             await nextTick();
             searchInputRef.value.focus();
+        } else if (panelProps.flag == 'friends') {
+            await fetchConnections();
         }
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -92,7 +101,11 @@ const deleteRequest = (requestId) => {
             <FilterItem :filter-name="'carrera'" v-if="panelProps.flag === 'filters'" />
             <FilterItem :filter-name="'palabras clave'" v-if="panelProps.flag === 'filters'" />
 
-            <ConnectionItem v-if="panelProps.flag === 'friends'" :connection="'username'"/>
+            <ConnectionItem v-for="connection in connections" 
+                :key="connection.username"
+                :connection="connection"
+                v-if="panelProps.flag === 'friends'"
+            />
         </div>
 
         <button v-if="panelProps.flag === 'search'" @click="router.push('/search');" class="search-button">búsqueda

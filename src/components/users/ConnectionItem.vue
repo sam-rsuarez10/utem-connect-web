@@ -1,16 +1,16 @@
 <script setup>
 
 const connectionProps = defineProps({
-    connection: String,
+    connection: Object,
 });
 
 </script>
 
 <template>
-    <router-link :to="`/user/${connection}`" class="router-link">
+    <router-link :to="`/user/${connection.username}`" class="router-link">
         <div class="connection-container">
             <div class="profile-photo"></div>
-            <span class="username-text">{{ connection }}</span>
+            <span class="username-text">{{ connection.username }}</span>
 
         </div>
     </router-link>
