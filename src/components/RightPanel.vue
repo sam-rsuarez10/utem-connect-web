@@ -8,6 +8,7 @@ import { fetchUserChats } from '../utils/fetchUserChats';
 import RightPanelSearchItem from './search/RightPanelSearchItem.vue';
 import { useRouter } from 'vue-router';
 import FilterItem from './search/FilterItem.vue';
+import ConnectionItem from './users/ConnectionItem.vue';
 
 const router = useRouter();
 
@@ -89,7 +90,9 @@ const deleteRequest = (requestId) => {
             <RightPanelSearchItem v-if="panelProps.flag === 'search'" />
 
             <FilterItem :filter-name="'carrera'" v-if="panelProps.flag === 'filters'" />
-            <FilterItem :filter-name="'descripciones clave'" v-if="panelProps.flag === 'filters'" />
+            <FilterItem :filter-name="'palabras clave'" v-if="panelProps.flag === 'filters'" />
+
+            <ConnectionItem v-if="panelProps.flag === 'friends'" :connection="'username'"/>
         </div>
 
         <button v-if="panelProps.flag === 'search'" @click="router.push('/search');" class="search-button">búsqueda

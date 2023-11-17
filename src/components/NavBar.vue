@@ -3,11 +3,11 @@ import { reactive } from 'vue';
 
 const emit = defineEmits();
 
-const viewProps =  defineProps({
+const viewProps = defineProps({
     isSearchView: Boolean,
 });
 
-const navOption = reactive ({
+const navOption = reactive({
     title: '',
     flag: '',
 });
@@ -34,6 +34,12 @@ const showSearchPanel = () => {
     }
     emit('show-right-panel', navOption.title, navOption.flag);
 };
+
+const showFriendsPanel = () => {
+    navOption.title = 'Conexiones';
+    navOption.flag = 'friends';
+    emit('show-right-panel', navOption.title, navOption.flag);
+}
 </script>
 
 <template>
@@ -51,6 +57,10 @@ const showSearchPanel = () => {
                 <button class="nav-button" @click="showSearchPanel">{{ isSearchView ? 'Filtros' : 'Buscar' }}</button>
             </li>
 
+            <li class="nav-item">
+                <button class="nav-button" @click="showFriendsPanel">Conexiones</button>
+            </li>
+
         </ul>
     </nav>
 </template>
@@ -58,17 +68,18 @@ const showSearchPanel = () => {
 <style scoped>
 .vertical-navbar {
     position: fixed;
-    top: calc((100vh - 15rem) / 2);
+    top: calc((100vh - 21rem) / 2);
     left: 0;
-    height: 15rem;
-    width: 10rem;
+    height: 21rem;
+    width: 10.5rem;
     background-color: #4B8C8F;
     color: white;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    border-radius: 5%;
+    border-top-right-radius: 2%;
+    border-bottom-right-radius: 2%;
 }
 
 /* Style the navigation links */
@@ -105,7 +116,7 @@ const showSearchPanel = () => {
     background-color: #62BD62;
     width: 9.5rem;
     height: 3rem;
-    border-radius: 15%;
+    border-radius: 5%;
     color: white;
     border: none;
 }
