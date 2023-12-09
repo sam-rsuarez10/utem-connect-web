@@ -1,10 +1,27 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import PostCard from './PostCard.vue';
+import { fetchPosts } from '../../utils/fetchPosts';
 
 const inputRef = ref();
 
-onMounted(() => inputRef.value.focus())
+const feed = ref([]); // users posts
+
+const props = defineProps({
+    username: String,
+    token: String,
+});
+
+const fetchUserPosts = async () => {
+    const response = await fetchPosts(true, props.token);
+    if (response.status == 200)
+        feed.value = response.data.posts;
+};
+
+onMounted(async () => {
+    await fetchUserPosts();
+    inputRef.value.focus();
+});
 </script>
 
 <template>
@@ -16,16 +33,7 @@ onMounted(() => inputRef.value.focus())
         </div>
 
         <div class="post-content">
-            <PostCard
-                :text="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat'" />
-            
-            <PostCard :text="'lorem impsum'"/>
-
-            <PostCard :text="'Lorem ipsum dolor sit amet, consectetur adipiscing elit'"/>
-
-            <PostCard :text="'Lorem ipsum dolor sit amet, consectetur adipiscing'"/>
-
-            <PostCard :text="'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus eget ligula aliquet, laoreet ligula vel, eleifend tellus. Sed volutpat, arcu et mattis laoreet, eros purus congue elit, vel ullamcorper velit tortor eget enim. Sed id varius quam. Ut lacinia lacus a velit tristique, et imperdiet leo ultricies. Quisque nec mauris ac sapien tincidunt luctus id vel libero. In hac habitasse platea dictumst. Integer dapibus, lacus ut finibus mattis, mi augue fermentum velit, ac ultricies felis arcu nec odio.Proin eu neque vehicula, scelerisque nisi et, sollicitudin sapien. Aenean posuere vehicula sem eu imperdiet. Suspendisse potenti. Proin vel volutpat libero. In hac habitasse platea dictumst. Etiam euismod justo vitae nulla accumsan, ut hendrerit nisl semper. Maecenas consectetur, ex at facilisis auctor, eros leo tincidunt tellus, sit amet gravida justo augue et nisl. Sed ut erat eu justo egestas rhoncus vel eget orci. Fusce auctor enim ut est aliquet, id vehicula purus efficitur. Nullam eu dui vel justo ullamcorper vestibulum in vel massa. Ut vel luctus elit.'"/>
+            <PostCard v-for="post in feed" :key="post.id" :user-post="post" :logged-user="props.username"/>
         </div>
     </div>
 </template>

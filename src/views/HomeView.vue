@@ -33,7 +33,7 @@ const hidePanel = () => {
   <main>
     <NavBar @show-right-panel="showRightPanel" :is-search-view="false"/>
 
-    <PostContainer />
+    <PostContainer :username="authStore.user" :token="authStore.token"/>
     
     <div class="welcome-container">
       <i class='bx bxs-smile bx-lg' style='color:#62bd62'></i>

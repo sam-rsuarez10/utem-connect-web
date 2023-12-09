@@ -2,7 +2,8 @@
 
 
 const props = defineProps({
-    text: String,
+    userPost: Object,
+    loggedUser: String,
 });
 </script>
 
@@ -10,15 +11,19 @@ const props = defineProps({
     <div class="card">
         <div class="card-header">
             <div class="profile-photo"></div>
-            <span class="username-text">username</span>
+            <router-link :to="userPost.publisher === loggedUser ? '/me' : `/user/${userPost.publisher}`"
+                class="router-link">
+                <span class="username-text">{{ userPost.publisher }}</span>
+            </router-link>
+
         </div>
         <div class="card-content">
-            <p> {{ props.text }} </p>
+            <p> {{ userPost.text }} </p>
         </div>
         <div class="card-footer">
             <div class="interactions">
-                <i title="like" class='bx bxs-heart bx-md bx-tada-hover' style='color:#a00000'  ></i>
-                <i title="responder" class='bx bxs-paper-plane bx-md bx-tada-hover' style='color:#155c5f'  ></i>
+                <i title="like" class='bx bxs-heart bx-md bx-tada-hover' style='color:#a00000'></i>
+                <i title="responder" class='bx bxs-paper-plane bx-md bx-tada-hover' style='color:#155c5f'></i>
             </div>
         </div>
     </div>
@@ -52,7 +57,7 @@ const props = defineProps({
 
 .username-text {
     margin-left: 1rem;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
 }
 
 .username-text:hover {
@@ -72,4 +77,12 @@ const props = defineProps({
     justify-content: flex-end;
 }
 
+.router-link {
+    text-decoration: none;
+    color: black;
+}
+
+.router-link:hover {
+    font-weight: bold;
+}
 </style>
