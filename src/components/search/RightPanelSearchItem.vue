@@ -1,14 +1,28 @@
 <script setup>
+const userProps = defineProps({
+    user: Object
+});
 </script>
 
 <template>
     <div class="user-container">
         <div class="profile-photo"></div>
-        <router-link to="#" class="router-link">
-            <span class="username-text">username</span>
+        <router-link :to="`/user/${user.username}`" class="router-link">
+            <span class="username-text">{{ user.username }}</span>
         </router-link>
 
-        <button class="connect-button btn btn-success">conectar</button>
+        <button v-if="user.action != 'reply'" :class="['action-button',
+            { 'btn btn-success': user.action == 'chat' || user.action == 'conectar' },
+            { 'btn btn-warning': user.action == 'pendiente' }]">{{ user.action }}</button>
+
+        <div class="options" v-if="user.action == 'reply'">
+            <button class="action-button btn btn-success" id="accept">
+                aceptar
+            </button>
+            <button class="action-button btn btn-danger" id="reject">
+                rechazar
+            </button>
+        </div>
     </div>
 </template>
 
@@ -42,7 +56,13 @@
     font-weight: bold;
 }
 
-.connect-button {
-    margin-left: 7rem;
+.action-button {
+    margin: auto;
+}
+
+.options {
+    display: flex;
+    gap: 1rem;
+    margin: auto;
 }
 </style>

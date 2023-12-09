@@ -10,6 +10,7 @@ import { useRouter } from 'vue-router';
 import FilterItem from './search/FilterItem.vue';
 import ConnectionItem from './users/ConnectionItem.vue';
 import { fetchUserConnections } from '../utils/fetchConnections';
+import { searchUsers } from '../utils/userSearch';
 
 const router = useRouter();
 
@@ -19,6 +20,7 @@ const pendingRequests = ref([]);
 const chats = ref([]);
 const searchInputRef = ref();
 const connections = ref([]);
+const retrievedUsers = ref([]);
 
 const emit = defineEmits();
 
@@ -74,6 +76,20 @@ const deleteRequest = (requestId) => {
     pendingRequests.value = pendingRequests.value.filter(request => request.id !== requestId);
 }
 
+const quickSearchUsers = async () => {
+    let input = searchInputRef.value.value;
+
+    let response = null;
+
+    if (input.includes('@') || !input.includes(' ') ){
+        response = await searchUsers(null, null, input, null, null, authStore.token);
+    } else {
+        const [name, last] = input.split(' ');
+        response = await searchUsers(name, last, null, null, null, authStore.token);
+    }
+
+    retrievedUsers.value = response.data.users;
+}
 </script>
 
 <template>
@@ -86,7 +102,7 @@ const deleteRequest = (requestId) => {
         <div class="input-group mb-3 search-input" v-if="panelProps.flag === 'search'">
             <input type="text" class="form-control" placeholder="escribe un nombre o correo utem"
                 aria-label="Recipient's username" aria-describedby="button-addon2" ref="searchInputRef">
-            <button class="btn btn-primary" type="button" id="quick-search-button">buscar</button>
+            <button class="btn btn-primary" type="button" id="quick-search-button" @click="quickSearchUsers()">buscar</button>
         </div>
 
         <div class="panel-content">
@@ -96,7 +112,7 @@ const deleteRequest = (requestId) => {
 
             <ChatItem v-for="chat in chats" :key="chat.id" :chat="chat" v-if="panelProps.flag == 'chat'" />
 
-            <RightPanelSearchItem v-if="panelProps.flag === 'search'" />
+            <RightPanelSearchItem  v-for="user in retrievedUsers" :key="user.username"  :user="user" v-if="panelProps.flag === 'search'" />
 
             <FilterItem :filter-name="'carrera'" v-if="panelProps.flag === 'filters'" />
             <FilterItem :filter-name="'palabras clave'" v-if="panelProps.flag === 'filters'" />

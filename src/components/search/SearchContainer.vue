@@ -1,10 +1,30 @@
 <script setup>
 import SearchItem from './SearchItem.vue';
 import { ref, onMounted } from 'vue';
+import { searchUsers } from '../../utils/userSearch';
+import { useAuthStore } from '../../stores/auth';
+
+const authStore = useAuthStore();
 
 const inputRef = ref(null);
+const results = ref([]);
 
-onMounted(() => inputRef.value.focus())
+const advancedSearchUsers = async () => {
+    let input = inputRef.value.value;
+
+    let response = null;
+
+    if (input.includes('@') || !input.includes(' ') ){
+        response = await searchUsers(null, null, input, null, null, authStore.token);
+    } else {
+        const [name, last] = input.split(' ');
+        response = await searchUsers(name, last, null, null, null, authStore.token);
+    }
+
+    results.value = response.data.users;
+}
+
+onMounted(() => inputRef.value.focus());
 </script>
 
 <template>
@@ -16,15 +36,11 @@ onMounted(() => inputRef.value.focus())
                 aria-describedby="main-search" 
                 id="main-search-input"
                 ref="inputRef">
-            <button class="btn btn-success" type="button" id="main-search">buscar</button>
+            <button class="btn btn-primary" type="button" id="main-search" @click="advancedSearchUsers()">buscar</button>
         </div>
 
         <div class="user-search">
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
-            <SearchItem />
+            <SearchItem v-for="user in results" :key="user.username" :user="user"/>
         </div>
     </div>
 </template>
