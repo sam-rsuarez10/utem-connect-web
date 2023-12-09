@@ -22,6 +22,16 @@ onMounted(async () => {
     await fetchUserPosts();
     inputRef.value.focus();
 });
+
+const refreshFeed = async () => {
+    await fetchUserPosts();
+
+    // Scroll the post-content div back to the top
+    const postContent = document.querySelector('.post-content');
+    if (postContent) {
+        postContent.scrollTop = 0;
+    }
+};
 </script>
 
 <template>
@@ -32,8 +42,10 @@ onMounted(async () => {
             <button class="btn btn-primary" type="button" id="post-button">compartir</button>
         </div>
 
+        <i title="actualizar feed" class='bx bx-refresh bx-lg bx-spin-hover' style='color:#837c7c' @click="refreshFeed()"></i>
+
         <div class="post-content">
-            <PostCard v-for="post in feed" :key="post.id" :user-post="post" :logged-user="props.username"/>
+            <PostCard v-for="post in feed" :key="post.id" :user-post="post" :logged-user="props.username" />
         </div>
     </div>
 </template>
@@ -88,5 +100,10 @@ onMounted(async () => {
 .post-input {
     margin: 2rem;
     width: 70%;
+}
+
+i:hover {
+    cursor: pointer;
+    animation-iteration-count: initial;
 }
 </style>

@@ -85,4 +85,8 @@ const props = defineProps({
 .router-link:hover {
     font-weight: bold;
 }
+
+i:hover {
+    cursor: pointer;
+}
 </style>
