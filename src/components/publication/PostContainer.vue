@@ -1,7 +1,8 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import PostCard from './PostCard.vue';
 import { fetchPosts } from '../../utils/fetchPosts';
+import axios from '@/axios';
 
 const inputRef = ref();
 
@@ -32,14 +33,38 @@ const refreshFeed = async () => {
         postContent.scrollTop = 0;
     }
 };
+
+const sharePost = async () => {
+
+    let text = inputRef.value.value.trim(); 
+
+    if (text == '')
+        return;
+
+    try {
+        const response = await axios.post('/publication-api/posts', { 'text': text }, {
+            headers: {
+                Authorization: `Token ${props.token}`,
+            }
+        });
+
+        if (response.status == 201){
+            await fetchUserPosts();
+            inputRef.value.value = '';
+        }
+
+    } catch (error) {
+        console.log('error sharing post: ', error);
+    }
+};
 </script>
 
 <template>
     <div class="post-container">
         <div class="input-group mb-3 post-input">
             <input type="text" class="form-control" placeholder="en qué estás pensando?" aria-label="post thought"
-                aria-describedby="post-button" id="post-input" ref="inputRef">
-            <button class="btn btn-primary" type="button" id="post-button">compartir</button>
+                aria-describedby="post-button" id="post-input" ref="inputRef" @v="postText">
+            <button class="btn btn-primary" type="button" id="post-button" @click="sharePost()">compartir</button>
         </div>
 
         <i title="actualizar feed" class='bx bx-refresh bx-lg bx-spin-hover' style='color:#837c7c' @click="refreshFeed()"></i>

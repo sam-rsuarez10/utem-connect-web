@@ -42,8 +42,10 @@ const resetComponent = () => {
     const savedUserInfo = JSON.parse(localStorage.getItem('userInfo'));
     if (savedUserInfo) {
         userInfo.username = savedUserInfo.username;
-        userInfo.names = savedUserInfo.names;
-        userInfo.lastnames = savedUserInfo.lastnames;
+        userInfo.firstname = savedUserInfo.firstname;
+        userInfo.lastname = savedUserInfo.lastname;
+        userInfo.middle_name = savedUserInfo.middle_name;
+        userInfo.second_surname = savedUserInfo.second_surname;
         userInfo.career = savedUserInfo.career;
         userInfo.description = savedUserInfo.description;
     }
@@ -188,7 +190,7 @@ onMounted(fetchUserAndInitialize);
                         Guardar
                     </button>
 
-                    <button class="option-button" id="cancel-button" @click="resetComponent">
+                    <button class="option-button" id="cancel-button" @click="resetComponent()">
                         Cancelar
                     </button>
                 </div>
