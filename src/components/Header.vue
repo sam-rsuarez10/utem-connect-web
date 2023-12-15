@@ -22,7 +22,7 @@ const logout = async () => {
         <div class="dropdown" v-if="authStore.isAuthenticated">
             <button class="btn dropdown-toggle" type="button" id="logoutDropdown" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                Cerrar sesión
+                <i class='bx bxs-cog bx-sm' title="opciones"></i>
             </button>
             <ul class="dropdown-menu" aria-labelledby="logoutDropdown">
                 <li>
@@ -57,6 +57,11 @@ header {
     color: white;
 }
 
+#header-title:hover {
+    font-size: 2.7rem;
+    transition: 700ms;
+}
+
 .dropdown {
     padding-right: 5rem;
     color: white;
@@ -82,5 +87,4 @@ header {
 
 .router-link {
     text-decoration: none;
-}
-</style>
+}</style>

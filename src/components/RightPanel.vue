@@ -1,15 +1,26 @@
 <script setup>
 import ConnectRequestItem from './connect/ConnectRequestItem.vue';
 import ChatItem from './chat/ChatItem.vue';
-import { ref, onMounted} from 'vue';
+import { ref, onMounted, watch, nextTick } from 'vue';
 import { useAuthStore } from '../stores/auth';
 import { fetchPendingRequests } from '../utils/fetchPendingRequests';
 import { fetchUserChats } from '../utils/fetchUserChats';
+import RightPanelSearchItem from './search/RightPanelSearchItem.vue';
+import { useRouter } from 'vue-router';
+import FilterItem from './search/FilterItem.vue';
+import ConnectionItem from './users/ConnectionItem.vue';
+import { fetchUserConnections } from '../utils/fetchConnections';
+import { searchUsers } from '../utils/userSearch';
+
+const router = useRouter();
 
 const authStore = useAuthStore();
 
 const pendingRequests = ref([]);
 const chats = ref([]);
+const searchInputRef = ref();
+const connections = ref([]);
+const retrievedUsers = ref([]);
 
 const emit = defineEmits();
 
@@ -30,13 +41,23 @@ const fetchChats = async () => {
     chats.value = response.data.user_chats;
 }
 
+const fetchConnections = async () => {
+    const response = await fetchUserConnections(true, authStore.token);
+    connections.value = response.data.connections;
+}
+
 const fetchPanelInfo = async () => {
     try {
-        if (panelProps.flag == 'connect'){
+        if (panelProps.flag == 'connect') {
             // fetch pending requests
             await fetchConnectRequests();
-        }  else if (panelProps.flag == 'chat') {
+        } else if (panelProps.flag == 'chat') {
             await fetchChats();
+        } else if (panelProps.flag == 'search') {
+            await nextTick();
+            searchInputRef.value.focus();
+        } else if (panelProps.flag == 'friends') {
+            await fetchConnections();
         }
     } catch (error) {
         console.error('Error fetching data: ', error);
@@ -45,10 +66,30 @@ const fetchPanelInfo = async () => {
 
 onMounted(() => fetchPanelInfo());
 
+watch(() => panelProps.flag, async (newFlag, oldFlag) => {
+    if (newFlag !== oldFlag) {
+        await fetchPanelInfo();
+    }
+});
+
 const deleteRequest = (requestId) => {
     pendingRequests.value = pendingRequests.value.filter(request => request.id !== requestId);
 }
 
+const quickSearchUsers = async () => {
+    let input = searchInputRef.value.value;
+
+    let response = null;
+
+    if (input.includes('@') || !input.includes(' ') ){
+        response = await searchUsers(null, null, input, null, null, authStore.token);
+    } else {
+        const [name, last] = input.split(' ');
+        response = await searchUsers(name, last, null, null, null, authStore.token);
+    }
+
+    retrievedUsers.value = response.data.users;
+}
 </script>
 
 <template>
@@ -58,22 +99,34 @@ const deleteRequest = (requestId) => {
             <h3>{{ panelProps.title }}</h3>
         </div>
 
-        <div class="panel-content">
-            <ConnectRequestItem
-                v-for="request in pendingRequests"
-                :key="request.id"
-                :request="request"
-                @delete-request-item="deleteRequest"
-                v-if="panelProps.flag == 'connect'"
-            />
+        <div class="input-group mb-3 search-input" v-if="panelProps.flag === 'search'">
+            <input type="text" class="form-control" placeholder="escribe un nombre o correo utem"
+                aria-label="Recipient's username" aria-describedby="button-addon2" ref="searchInputRef">
+            <button class="btn btn-primary" type="button" id="quick-search-button" @click="quickSearchUsers()">buscar</button>
+        </div>
 
-            <ChatItem 
-                v-for="chat in chats"
-                :key="chat.id"
-                :chat="chat"
-                v-if="panelProps.flag == 'chat'"
+        <div class="panel-content">
+
+            <ConnectRequestItem v-for="request in pendingRequests" :key="request.id" :request="request"
+                @delete-request-item="deleteRequest" v-if="panelProps.flag == 'connect'" />
+
+            <ChatItem v-for="chat in chats" :key="chat.id" :chat="chat" v-if="panelProps.flag == 'chat'" />
+
+            <RightPanelSearchItem  v-for="user in retrievedUsers" :key="user.username"  :user="user" v-if="panelProps.flag === 'search'" />
+
+            <FilterItem :filter-name="'carrera'" v-if="panelProps.flag === 'filters'" />
+            <FilterItem :filter-name="'palabras clave'" v-if="panelProps.flag === 'filters'" />
+
+            <ConnectionItem v-for="connection in connections" 
+                :key="connection.username"
+                :connection="connection"
+                v-if="panelProps.flag === 'friends'"
             />
         </div>
+
+        <button v-if="panelProps.flag === 'search'" @click="router.push('/search');" class="search-button">búsqueda
+            avanzada</button>
+
     </div>
 </template>
 
@@ -99,6 +152,27 @@ const deleteRequest = (requestId) => {
 .panel-content {
     width: 100%;
     height: 90%;
+    overflow-y: auto;
+
+    /* Hide scrollbar by default */
+    &::-webkit-scrollbar {
+        width: 0;
+    }
+
+    /* Handle on hover */
+    &:hover::-webkit-scrollbar {
+        width: 0.5rem;
+    }
+
+    /* Customize scrollbar track */
+    &::-webkit-scrollbar-track {
+        background: #155C5F;
+    }
+
+    /* Customize scrollbar thumb */
+    &::-webkit-scrollbar-thumb {
+        background: #82B7B7;
+    }
 }
 
 #hide-button {
@@ -113,5 +187,34 @@ const deleteRequest = (requestId) => {
 #hide-button:hover {
     background-color: #1C7E1C;
     transition: 500ms;
+}
+
+.search-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.search-input,
+.filter-input {
+    width: 90%;
+}
+
+.search-button {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border: none;
+    width: 30%;
+    border-radius: 5%;
+    background-color: #003D3D;
+    color: white;
+    font-size: 0.95rem;
+    transition: transform 900ms ease;
+}
+
+.search-button:hover {
+    font-size: 1.1rem;
+    transform: scale(1.1);
 }
 </style>

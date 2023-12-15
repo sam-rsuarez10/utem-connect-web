@@ -5,6 +5,7 @@ import Footer from '../components/Footer.vue';
 import NavBar from '../components/NavBar.vue';
 import RightPanel from '../components/RightPanel.vue';
 import { reactive } from 'vue';
+import PostContainer from '../components/publication/PostContainer.vue';
 
 const authStore = useAuthStore();
 const user = authStore.user;
@@ -30,13 +31,10 @@ const hidePanel = () => {
 <template>
   <Header />
   <main>
-    <NavBar @show-right-panel="showRightPanel" />
-    <div class="container">
-      <h1>Home</h1>
-      <div v-if="authStore.isAuthenticated">
-        <p>Welcome, {{ user }}!</p>
-      </div>
-    </div>
+    <NavBar @show-right-panel="showRightPanel" :is-search-view="false"/>
+
+    <PostContainer :username="authStore.user" :token="authStore.token"/>
+    
     <div class="welcome-container">
       <i class='bx bxs-smile bx-lg' style='color:#62bd62'></i>
       <p class="welcome">

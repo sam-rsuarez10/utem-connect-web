@@ -85,6 +85,13 @@ const router = createRouter({
       name: 'user-chat',
       component: () => import('../views/ChatView.vue'),
       meta: { requiresAuth: true }
+    },
+
+    {
+      path: '/search',
+      name: 'advanced-search',
+      component: () => import('../views/SearchView.vue'),
+      meta: { requiresAuth: true }
     }
   ]
 })
