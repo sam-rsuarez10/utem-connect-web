@@ -221,7 +221,9 @@ h5 {
     width: 12rem;
     height: 12rem;
     border-radius: 50%;
-    background-color: gray;
+    background-image: url('../../assets/img/profile-photo.jpeg');
+    background-size: cover;
+    background-position: center center;
 
 }
 

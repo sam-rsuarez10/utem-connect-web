@@ -182,7 +182,9 @@ const scrollToBottom = () => {
     height: 3rem;
     /* To create a circle, make sure width and height are equal */
     border-radius: 50%;
-    background-color: gray;
+    background-image: url('../../assets/img/profile-photo.jpeg');
+    background-size: cover;
+    background-position: center center;
     margin-right: 1rem;
     /* Add margin for spacing */
 }

@@ -41,7 +41,9 @@ const userProps = defineProps({
     width: 2.5rem;
     height: 2.5rem;
     border-radius: 50%;
-    background-color: gray;
+    background-image: url('../../assets/img/profile-photo.jpeg');
+    background-size: cover;
+    background-position: center center;
     margin-left: 0.75rem;
 }
 
