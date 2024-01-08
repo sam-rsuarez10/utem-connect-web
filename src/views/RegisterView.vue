@@ -53,7 +53,7 @@ const register = async () => {
         router.push('/verify');
     } else {
         newUser.invalid = true,
-            newUser.errorMsg = 'no se pudo registrar, por favor intenta más tarde'
+            newUser.errorMsg = 'no se pudo registrar, por favor intenta más tarde o verifica tus datos'
     }
 }
 
@@ -92,7 +92,7 @@ const register = async () => {
                 </div>
                 <div class="col-6">
                     <label for="correoUtem" class="form-label">Correo Utem</label>
-                    <input type="email" class="form-control" id="correoUtem" required v-model="newUser.email">
+                    <input type="email" class="form-control" id="correoUtem" required v-model="newUser.email" placeholder="user@utem.cl">
                 </div>
                 <div class="col-6">
                     <label for="password" class="form-label">Password</label>

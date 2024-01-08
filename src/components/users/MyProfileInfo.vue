@@ -94,6 +94,7 @@ const saveUserInfo = async () => {
             }
 
             // Refresh component data and localStorage
+            localStorage.removeItem('userInfo');
             fetchUserAndInitialize();
             userInfo.editState = false;
             disbaleInputs();
@@ -134,7 +135,7 @@ onMounted(fetchUserAndInitialize);
             <div class="names-info">
                 <div class="input-group">
                     <input type="text" id="username" class="form-control" v-model="userInfo.username"
-                        aria-label="Recipient's username with two button addons" disabled>
+                        aria-label="Recipient's username with two button addons" disabled placeholder="username">
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('username')">Edit</button>
                     <button class="btn btn-outline-danger" type="button"
                         @click="cancelEditInput('username')">Cancel</button>
@@ -142,21 +143,21 @@ onMounted(fetchUserAndInitialize);
 
                 <div class="input-group">
                     <input type="text" id="firstname" class="form-control" v-model="userInfo.firstname"
-                        aria-label="Recipient's username with two button addons" disabled>
+                        aria-label="Recipient's username with two button addons" disabled placeholder="Nombre">
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('firstname')">Edit</button>
                     <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('firstname')">Cancel</button>
                 </div>
 
                 <div class="input-group">
                     <input type="text" id="middle-name" class="form-control" v-model="userInfo.middle_name"
-                        aria-label="Recipient's username with two button addons" disabled>
+                        aria-label="Recipient's username with two button addons" disabled placeholder="Segundo nombre">
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('middle-name')">Edit</button>
                     <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('middle-name')">Cancel</button>
                 </div>
 
                 <div class="input-group">
                     <input type="text" id="lastname" class="form-control" v-model="userInfo.lastname"
-                        aria-label="Recipient's username with two button addons" disabled>
+                        aria-label="Recipient's username with two button addons" disabled placeholder="Apellido">
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('lastname')">Edit</button>
                     <button class="btn btn-outline-danger" type="button"
                         @click="cancelEditInput('lastname')">Cancel</button>
@@ -164,7 +165,7 @@ onMounted(fetchUserAndInitialize);
 
                 <div class="input-group">
                     <input type="text" id="surname" class="form-control" v-model="userInfo.second_surname"
-                        aria-label="Recipient's username with two button addons" disabled>
+                        aria-label="Recipient's username with two button addons" disabled placeholder="Segundo apellido">
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('surname')">Edit</button>
                     <button class="btn btn-outline-danger" type="button"
                         @click="cancelEditInput('surname')">Cancel</button>
@@ -172,7 +173,7 @@ onMounted(fetchUserAndInitialize);
 
                 <div class="input-group">
                     <input type="text" id="career" class="form-control" v-model="userInfo.career"
-                        aria-label="Recipient's username with two button addons" disabled>
+                        aria-label="Recipient's username with two button addons" disabled placeholder="Carrera">
                     <button class="btn btn-outline-warning" type="button" @click="enableEdit('career')">Edit</button>
                     <button class="btn btn-outline-danger" type="button" @click="cancelEditInput('career')">Cancel</button>
                 </div>
@@ -182,11 +183,11 @@ onMounted(fetchUserAndInitialize);
                 <div class="description-container">
                     <h5>Sobre mí</h5>
                     <textarea ref="textareaDesc" name="user-description" id="description" cols="35" rows="4"
-                        v-model="userInfo.description" @input="handleTextareaInput" spellcheck="false"></textarea>
+                        v-model="userInfo.description" @input="handleTextareaInput" spellcheck="false" placeholder="escribe una descripción sobre ti..."></textarea>
                 </div>
 
                 <div class="submit-buttons-container" v-if="userInfo.editState">
-                    <button class="option-button" id="save-button" type="submit" @click="saveUserInfo">
+                    <button class="option-button" id="save-button" type="submit" @click="saveUserInfo()">
                         Guardar
                     </button>
 
